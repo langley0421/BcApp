@@ -14,7 +14,7 @@ import dto.CardInfo;
 import dto.CardInput;
 
 public class CardDAO {
-    private static final String JDBC_URL = "jdbc:mysql://localhost:3306/webapp2?characterEncoding=utf8&useSSL=false&serverTimezone=GMT%2B9&rewriteBatchedStatements=true";
+    private static final String JDBC_URL = "jdbc:mysql://localhost:3306/db_cardApp?characterEncoding=utf8&useSSL=false&serverTimezone=GMT%2B9&rewriteBatchedStatements=true";
     private static final String DB_USER = "root";
     private static final String DB_PASSWORD = "password";
 

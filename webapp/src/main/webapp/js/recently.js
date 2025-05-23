@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 全てのカードデータを格納する変数
     let allCardsData = [];
 
-    fetch('../JSON/data.json')
+    fetch('../cardServlet?action=list')
         .then(res => res.json())
         .then(data => {
             allCardsData = data;
