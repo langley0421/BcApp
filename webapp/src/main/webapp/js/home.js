@@ -14,11 +14,7 @@ import {
     getDOMSelectors                    
 } from './domSelectors.js';
 
-<<<<<<< HEAD
-//const SERVLET_BASE_URL = '/webapp/cardServlet'; // Added constant
-=======
 // const SERVLET_BASE_URL = '/webapp/cardServlet'; // 削除: グローバル変数 window.cardServletUrl を使用します
->>>>>>> branch 'feature/jsp-servlet-conversion-auth' of https://github.com/langley0421/BcApp.git
 
 document.addEventListener('DOMContentLoaded', () => {
     const dom = getDOMSelectors();     // DOM要素をまとめて取得

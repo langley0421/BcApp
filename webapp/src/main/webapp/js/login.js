@@ -19,7 +19,7 @@ function login() {
 
     if(userData[email] && userData[email].password === password) { // ユーザー名とパスワードが一致するか確認
         setCookie("loggedInUser", email, 1); // クッキーにユーザー名を保存
-        window.location.href = "home.html"; // ログイン成功後、index.htmlにリダイレクト
+        window.location.href = "home"; // ログイン成功後、index.htmlにリダイレクト
     } else {
         alert("メールアドレス または パスワードが違います"); // ユーザー名またはパスワードが無効な場合のアラート
     }
