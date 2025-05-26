@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -8,7 +9,6 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/home.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/dark_mode.css">
     <script>
-        const cardServletUrl = '<%= request.getContextPath() %>/cardServlet';
     </script>
 </head>
 <body>
@@ -46,7 +46,14 @@
         </div>
 
         <div id="card-list" class="card-list">
-            <!-- 名刺カードがここに表示されます -->
+            <c:forEach var="card" items="${cardList}">
+                <div class="card">
+                    <h3>${card.name}</h3>
+                    <p>${card.companyName}（${card.positionName}）</p>
+                    <p>${card.departmentName}</p>
+                    <p>${card.email}</p>
+                </div>
+            </c:forEach>
         </div>
 
         <div id="modal" class="modal hidden">
@@ -137,36 +144,6 @@
     <!-- JavaScript -->
     <script type="module" src="${pageContext.request.contextPath}/js/home.js"></script>
     <script type="module" src="${pageContext.request.contextPath}/js/recently.js"></script>
-    
-    <!-- 名刺一覧を取得して表示するJavaScript -->
-    <script>
-    const cardServletUrl = '<%= request.getContextPath() %>/cardServlet';
-
-    document.addEventListener('DOMContentLoaded', async () => {
-        try {
-            const response = await fetch(cardServletUrl);
-            if (!response.ok) throw new Error('通信に失敗しました');
-            const cards = await response.json();
-
-            const cardList = document.getElementById('card-list');
-            cardList.innerHTML = '';
-
-            cards.forEach(card => {
-                const cardElement = document.createElement('div');
-                cardElement.classList.add('card');
-                cardElement.innerHTML = `
-                    <h3>${card.name}</h3>
-                    <p>${card.companyName}（${card.positionName}）</p>
-                    <p>${card.departmentName}</p>
-                    <p>${card.email}</p>
-                `;
-                cardList.appendChild(cardElement);
-            });
-        } catch (error) {
-            console.error('名刺データの取得に失敗しました:', error);
-        }
-    });
-</script>
     
 </body>
 </html>
