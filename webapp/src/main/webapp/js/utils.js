@@ -128,11 +128,7 @@ export function showDetailModal(cardData, cardElement) { // cardElementはメイ
 
     // 編集ボタンの機能
     detailModal.querySelector('.edit-button').addEventListener('click', () => {
-<<<<<<< HEAD
         const mainModal = document.getElementById('modal'); // Changed to 'modal'
-=======
-        const mainModal = document.getElementById('addCardModal'); // メインの追加/編集モーダルのIDと仮定
->>>>>>> branch 'feature/jsp-servlet-conversion-auth' of https://github.com/langley0421/BcApp.git
         if (!mainModal) {
             console.error('メインの追加/編集モーダルが見つかりません！');
             return;
@@ -162,15 +158,6 @@ export function showDetailModal(cardData, cardElement) { // cardElementはメイ
             params.append('action', 'delete');
             params.append('card_id', cardData.card_id);
 
-<<<<<<< HEAD
-            try {
-                const response = await fetch(cardServletUrl, { // Path updated
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: params
-                });
-                const result = await response.json();
-=======
             fetch(window.cardServletUrl, { // '/webapp/cardServlet' を window.cardServletUrl に変更
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -187,7 +174,6 @@ export function showDetailModal(cardData, cardElement) { // cardElementはメイ
                 return response.json();
             })
             .then(result => {
->>>>>>> branch 'feature/jsp-servlet-conversion-auth' of https://github.com/langley0421/BcApp.git
                 if (result.success) {
                     if(cardElement) cardElement.remove(); // メインリストからカードを削除
                     document.body.removeChild(detailModal);
@@ -213,15 +199,6 @@ export function showDetailModal(cardData, cardElement) { // cardElementはメイ
         params.append('card_id', cardData.card_id);
         params.append('isFavorite', newFavoriteStatus.toString());
 
-<<<<<<< HEAD
-        try {
-            const response = await fetch(cardServletUrl, { // Path updated
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: params
-            });
-            const result = await response.json();
-=======
         fetch(window.cardServletUrl, { // '/webapp/cardServlet' を window.cardServletUrl に変更
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -238,7 +215,6 @@ export function showDetailModal(cardData, cardElement) { // cardElementはメイ
             return response.json();
         })
         .then(result => {
->>>>>>> branch 'feature/jsp-servlet-conversion-auth' of https://github.com/langley0421/BcApp.git
             if (result.success) {
                 cardData.favorite = newFavoriteStatus; // ローカルデータを更新
                 favoriteButton.textContent = newFavoriteStatus ? '★ お気に入り' : '☆ お気に入り';
@@ -427,17 +403,6 @@ export function handleCardSubmission(modal, onSuccessRefreshCallback, resetCallb
         }
     }
     
-<<<<<<< HEAD
-    try {
-        const response = await fetch(cardServletUrl, { // Path updated
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: params
-        });
-
-=======
     fetch(window.cardServletUrl, { // '/webapp/cardServlet' を window.cardServletUrl に変更
         method: 'POST',
         headers: {
@@ -446,7 +411,6 @@ export function handleCardSubmission(modal, onSuccessRefreshCallback, resetCallb
         body: params
     })
     .then(response => {
->>>>>>> branch 'feature/jsp-servlet-conversion-auth' of https://github.com/langley0421/BcApp.git
         if (!response.ok) {
             // response.json()を試みて、より詳細なエラーメッセージを取得
             return response.json().then(errorData => {

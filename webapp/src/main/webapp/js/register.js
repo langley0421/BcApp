@@ -44,7 +44,7 @@ function register() {
     try {
         localStorage.setItem("userData", JSON.stringify(userData));
         alert("登録が完了しました。");
-        window.location.href = "login.html";
+        window.location.href = "login";
 
     } catch (error) {
         console.error("ローカルストレージへの保存に失敗しました:", error);
