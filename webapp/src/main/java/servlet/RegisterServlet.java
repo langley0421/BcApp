@@ -27,7 +27,6 @@ public class RegisterServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        // 文字化け防止（リクエストとレスポンスのエンコーディング設定）
         request.setCharacterEncoding("UTF-8");
         response.setContentType("text/html; charset=UTF-8");
 
@@ -36,11 +35,10 @@ public class RegisterServlet extends HttpServlet {
         String confirmPassword = request.getParameter("confirmPassword");
 
         if (password != null && password.equals(confirmPassword)) {
-            // パスワード一致時
             String hashedPassword = PasswordUtil.hashPassword(password);
 
             if (hashedPassword == null) {
-                request.setAttribute("error", "登録処理中にエラーが発生しました。");
+                request.setAttribute("error", "パスワードのハッシュ化に失敗しました。");
                 request.getRequestDispatcher("/WEB-INF/jsp/regist.jsp").forward(request, response);
                 return;
             }
@@ -59,7 +57,6 @@ public class RegisterServlet extends HttpServlet {
                 request.getRequestDispatcher("/WEB-INF/jsp/regist.jsp").forward(request, response);
             }
         } else {
-            // パスワード不一致時
             request.setAttribute("error", "パスワードが一致しません。");
             request.getRequestDispatcher("/WEB-INF/jsp/regist.jsp").forward(request, response);
         }
@@ -69,10 +66,9 @@ public class RegisterServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        // GETでも文字化けしないように設定
         request.setCharacterEncoding("UTF-8");
         response.setContentType("text/html; charset=UTF-8");
 
-        request.getRequestDispatcher("/WEB-INF/jsp/login.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/jsp/regist.jsp").forward(request, response);
     }
 }

@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="../../css/login.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/login.css">
 </head>
 <body>
     <div class='container'>
@@ -51,11 +51,10 @@
             <div class="divider">
                 <span>または</span>
             </div>
-                <a href="regist.jsp" class='registerLink'>
+                <a href="register" class='registerLink'>
                     アカウントを作成する
                 </a>
         </div>
     </div>
-    <script src="../../js/login.js"></script>
 </body>
 </html>

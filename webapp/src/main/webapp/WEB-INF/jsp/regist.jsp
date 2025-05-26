@@ -1,12 +1,11 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>登録</title>
-    <link rel="stylesheet" href="../../css/register.css">
+    <title>アカウント作成</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/register.css">
 </head>
 <body>
     <div class='container'>
@@ -16,17 +15,11 @@
             <% if (error != null) { %>
                 <p style="color:red;"><%= error %></p>
             <% } %>
+            <% String message = (String) request.getAttribute("message"); %>
+            <% if (message != null) { %>
+                <p style="color:green;"><%= message %></p>
+            <% } %>
             <form class='form' id="registerForm" action="register" method="post">
-                <!-- <div class='inputGroup'>
-                    <label for="username" class='label'>ユーザー名</label>
-                    <input
-                        type="text"
-                        id="username"
-                        class='input'
-                        placeholder="ユーザー名を入力"
-                        required
-                    />
-                </div> -->
                 <div class='inputGroup'>
                     <label for="email" class='label'>メールアドレス</label>
                     <input
@@ -62,9 +55,8 @@
                 </div>
                 <button type="submit" class='button'>アカウント作成</button>
             </form>
-                <a href="login.jsp" class='registerLink'>すでにアカウントをお持ちですか？ ログイン</a>
+            <a href="login" class='registerLink'>すでにアカウントをお持ちですか？ ログイン</a>
         </div>
     </div>
-    <script src="../../js/register.js"></script>
 </body>
 </html>

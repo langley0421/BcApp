@@ -1,13 +1,12 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>名刺管理</title>
-    <link rel="stylesheet" href="../../css/home.css">
-    <link rel="stylesheet" href="../../css/dark_mode.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/home.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/dark_mode.css">
     <script>
         const cardServletUrl = '<%= request.getContextPath() %>/cardServlet';
     </script>
@@ -17,9 +16,7 @@
         <h1>BizCardy</h1>
         <button id="dark-mode-toggle">
             <span id="icon">
-                <svg class="icon-sun" fill="currentColor" width="24" height="24" viewBox="0 0 24 24">
-                    <path d="M12,9c1.65,0,3,1.35,3,3s-1.35,3-3,3s-3-1.35-3-3S10.35,9,12,9 M12,7c-2.76,0-5,2.24-5,5s2.24,5,5,5s5-2.24,5-5 S14.76,7,12,7L12,7z M2,13l2,0c0.55,0,1-0.45,1-1s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S1.45,13,2,13z M20,13l2,0c0.55,0,1-0.45,1-1 s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S19.45,13,20,13z M11,2v2c0,0.55,0.45,1,1,1s1-0.45,1-1V2c0-0.55-0.45-1-1-1S11,1.45,11,2z M11,20v2c0,0.55,0.45,1,1,1s1-0.45,1-1v-2c0-0.55-0.45-1-1-1C11.45,19,11,19.45,11,20z M5.99,4.58c-0.39-0.39-1.03-0.39-1.41,0 c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0s0.39-1.03,0-1.41L5.99,4.58z M18.36,16.95 c-0.39-0.39-1.03-0.39-1.41,0c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0c0.39-0.39,0.39-1.03,0-1.41 L18.36,16.95z M19.42,5.99c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06c-0.39,0.39-0.39,1.03,0,1.41 s1.03,0.39,1.41,0L19.42,5.99z M7.05,18.36c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06 c-0.39,0.39-0.39,1.03,0,1.41s1.03,0.39,1.41,0L7.05,18.36z"></path>
-                </svg>
+                <!-- 省略：SVGアイコン -->
             </span>
         </button>
     </header>
@@ -47,10 +44,9 @@
               <button class="recent-filter-button" id="apply-filter">絞り込む</button>
           </label>
         </div>
-      
 
         <div id="card-list" class="card-list">
-            <!-- ここに名刺カード -->
+            <!-- 名刺カードがここに表示されます -->
         </div>
 
         <div id="modal" class="modal hidden">
@@ -59,77 +55,77 @@
                 <table class="modal-table">
                     <input type="hidden" name="card_id" value="0">
                     <tr>
-                      <td>
-                        <label>会社名<br>
-                            <input type="text" name="company_name">
-                        </label>
-                      </td>
-                      <td>
-                        <label>郵便番号<br>
-                        <input type="text" name="company_zipcode">
-                        </label>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <label>氏名（※必須）<br>
-                            <input type="text" name="name">
-                        </label>
-                      </td>
-                      <td>
-                        <label>住所<br>
-                        <input type="text" name="company_address">
-                        </label>
-                      </td>
-                     </tr>
-                     <tr>
-                      <td>
-                        <label>部署名<br>
-                        <input type="text" name="department_name">
-                        </label>
-                      </td>
-                      <td>
-                        <label>電話番号<br>
-                        <input type="text" name="company_phone">
-                        </label>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <label>役職名<br>
-                        <input type="text" name="position_name">
-                        </label>
-                      </td>
-                      <td>
-                        <label>メールアドレス<br>
-                            <input type="text" name="email">
-                        </label>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td colspan="2">
-                        <label>備考<br>
-                            <textarea name="remarks"></textarea>
+                        <td>
+                            <label>会社名<br>
+                                <input type="text" name="company_name">
                             </label>
-                      </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">
-                          <label>
-                            <input type="checkbox" name="favorite"> お気に入り
-                          </label>
+                        </td>
+                        <td>
+                            <label>郵便番号<br>
+                                <input type="text" name="company_zipcode">
+                            </label>
                         </td>
                     </tr>
                     <tr>
-                      <td colspan="2">
-                        <div class="modal-button-container">
-                            <button class="modal-button-submit">送信</button>
-                            <button class="modal-button-reset">リセット</button>
-                        </div>
-                        <span id="error_message"></span>
-                      </td>
+                        <td>
+                            <label>氏名（※必須）<br>
+                                <input type="text" name="name">
+                            </label>
+                        </td>
+                        <td>
+                            <label>住所<br>
+                                <input type="text" name="company_address">
+                            </label>
+                        </td>
                     </tr>
-                  </table>
+                    <tr>
+                        <td>
+                            <label>部署名<br>
+                                <input type="text" name="department_name">
+                            </label>
+                        </td>
+                        <td>
+                            <label>電話番号<br>
+                                <input type="text" name="company_phone">
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>役職名<br>
+                                <input type="text" name="position_name">
+                            </label>
+                        </td>
+                        <td>
+                            <label>メールアドレス<br>
+                                <input type="text" name="email">
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <label>備考<br>
+                                <textarea name="remarks"></textarea>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <label>
+                                <input type="checkbox" name="favorite"> お気に入り
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <div class="modal-button-container">
+                                <button class="modal-button-submit">送信</button>
+                                <button class="modal-button-reset">リセット</button>
+                            </div>
+                            <span id="error_message"></span>
+                        </td>
+                    </tr>
+                </table>
                 <button class="close-button">閉じる</button>
             </div>
         </div>
@@ -139,7 +135,38 @@
     </main>
 
     <!-- JavaScript -->
-    <script type="module" src="../../js/home.js"></script>
-    <script type="module" src="../../js/recently.js"></script>
+    <script type="module" src="${pageContext.request.contextPath}/js/home.js"></script>
+    <script type="module" src="${pageContext.request.contextPath}/js/recently.js"></script>
+    
+    <!-- 名刺一覧を取得して表示するJavaScript -->
+    <script>
+    const cardServletUrl = '<%= request.getContextPath() %>/cardServlet';
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        try {
+            const response = await fetch(cardServletUrl);
+            if (!response.ok) throw new Error('通信に失敗しました');
+            const cards = await response.json();
+
+            const cardList = document.getElementById('card-list');
+            cardList.innerHTML = '';
+
+            cards.forEach(card => {
+                const cardElement = document.createElement('div');
+                cardElement.classList.add('card');
+                cardElement.innerHTML = `
+                    <h3>${card.name}</h3>
+                    <p>${card.companyName}（${card.positionName}）</p>
+                    <p>${card.departmentName}</p>
+                    <p>${card.email}</p>
+                `;
+                cardList.appendChild(cardElement);
+            });
+        } catch (error) {
+            console.error('名刺データの取得に失敗しました:', error);
+        }
+    });
+</script>
+    
 </body>
 </html>

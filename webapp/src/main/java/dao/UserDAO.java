@@ -1,72 +1,71 @@
 package dao;
 
-import dto.User;
-import util.DatabaseUtil; // DatabaseUtilをutilパッケージからインポート
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-// Statement import might not be needed if not using generated keys explicitly here
-// import java.sql.Statement; 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import dto.User;
 
 public class UserDAO {
 
-    private static final Logger LOGGER = Logger.getLogger(UserDAO.class.getName());
+    private static final String JDBC_URL = "jdbc:mysql://localhost:3306/db_cardApp";
+    private static final String DB_USER = "root";
+    private static final String DB_PASSWORD = "password";
 
-    public User findUserByEmail(String email) {
-        String sql = "SELECT id, email, password FROM user WHERE email = ?"; // saltカラムの取得を削除
-        User user = null;
-
-        try (Connection conn = DatabaseUtil.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setString(1, email);
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    user = new User();
-                    user.setId(rs.getInt("id"));
-                    user.setEmail(rs.getString("email"));
-                    user.setPassword(rs.getString("password")); // これはハッシュ化されたパスワード
-                    // user.setSalt(rs.getString("salt")); // saltの設定を削除
-                }
-            }
-        } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "メールによるユーザー検索エラー: " + email, e);
-        }
-        return user;
-    }
-
+    // ユーザー登録処理
     public boolean createUser(User user) {
-        // user.getPassword()は既にハッシュ化されていると仮定
-        String sql = "INSERT INTO user (email, password) VALUES (?, ?)"; // saltカラムへの挿入を削除
-        boolean success = false;
+        String sql = "INSERT INTO user (email, password) VALUES (?, ?)";
 
-        if (user.getEmail() == null || user.getPassword() == null) { // saltのnullチェックを削除
-            LOGGER.warning("ユーザーのメールまたはパスワードがnullです。ユーザーを作成できません。");
+        try {
+            // JDBCドライバを読み込む
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            try (Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASSWORD);
+                 PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+                stmt.setString(1, user.getEmail());
+                stmt.setString(2, user.getPassword()); // ここはハッシュ化済みのパスワードを渡す
+                stmt.executeUpdate();
+                return true;
+
+            }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            System.out.println("JDBCドライバの読み込みに失敗しました");
+            return false;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("SQLエラーが発生しました");
             return false;
         }
+    }
 
-        try (Connection conn = DatabaseUtil.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+    // メールアドレスでユーザーを検索（ログイン処理用）
+    public User findUserByEmail(String email) {
+        String sql = "SELECT * FROM user WHERE email = ?";
 
-            stmt.setString(1, user.getEmail());
-            stmt.setString(2, user.getPassword());
-            // stmt.setString(3, user.getSalt()); // saltの設定を削除
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
 
-            int rowsAffected = stmt.executeUpdate();
-            success = rowsAffected > 0;
+            try (Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASSWORD);
+                 PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-        } catch (SQLException e) {
-            // 一意性制約違反（メールアドレスが既に存在する）を確認
-            if (e.getSQLState().startsWith("23")) { // 整合性制約違反のSQLState
-                 LOGGER.log(Level.WARNING, "ユーザーを作成できませんでした。メール '" + user.getEmail() + "' は既に存在する可能性があります。", e);
-            } else {
-                LOGGER.log(Level.SEVERE, "ユーザー作成エラー: " + user.getEmail(), e);
+                stmt.setString(1, email);
+                ResultSet rs = stmt.executeQuery();
+
+                if (rs.next()) {
+                    User user = new User();
+                    user.setEmail(rs.getString("email"));
+                    user.setPassword(rs.getString("password")); // ハッシュ化されたパスワード
+                    return user;
+                }
             }
-            success = false;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return success;
+
+        return null;
     }
 }
