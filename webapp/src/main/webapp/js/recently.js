@@ -16,7 +16,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // 全てのカードデータを格納する変数
     let allCardsData = [];
 
+<<<<<<< HEAD
     fetch(`${cardServletUrl}?action=list`) // Use global cardServletUrl
+=======
+    fetch(`${window.cardServletUrl}?action=list`) // グローバル変数 window.cardServletUrl を使用
+>>>>>>> branch 'feature/jsp-servlet-conversion-auth' of https://github.com/langley0421/BcApp.git
         .then(res => res.json())
         .then(data => {
             allCardsData = data;
