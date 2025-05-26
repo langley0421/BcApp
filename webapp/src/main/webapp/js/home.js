@@ -14,7 +14,7 @@ import {
     getDOMSelectors                    
 } from './domSelectors.js';
 
-const SERVLET_BASE_URL = '/webapp/cardServlet'; // Added constant
+//const SERVLET_BASE_URL = '/webapp/cardServlet'; // Added constant
 
 document.addEventListener('DOMContentLoaded', () => {
     const dom = getDOMSelectors();     // DOM要素をまとめて取得

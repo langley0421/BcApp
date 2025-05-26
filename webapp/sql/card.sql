@@ -6,22 +6,6 @@
 -- USE db_cardApp;
 
 
--- databaseのcard tableを作成
--- CREATE TABLE IF NOT EXISTS card (
---     id INT AUTO_INCREMENT PRIMARY KEY,
---     company VARCHAR(100) NOT NULL,
---     name VARCHAR(20) NOT NULL,
---     zipcode VARCHAR(10),
---     address VARCHAR(30),
---     department VARCHAR(20),
---     phone VARCHAR(20),
---     position VARCHAR(20),
---     email VARCHAR(50),
---     remarks TEXT,
---     favorite BOOLEAN DEFAULT FALSE,
---     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
--- );
-
 -- databaseのuser tableを作成
 -- CREATE TABLE IF NOT EXISTS user (
 --     id INT AUTO_INCREMENT PRIMARY KEY,

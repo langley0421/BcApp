@@ -128,7 +128,7 @@ export function showDetailModal(cardData, cardElement) { // cardElement is the c
 
     // Edit button functionality
     detailModal.querySelector('.edit-button').addEventListener('click', () => {
-        const mainModal = document.getElementById('addCardModal'); // Assuming this is the ID of your main add/edit modal
+        const mainModal = document.getElementById('modal'); // Changed to 'modal'
         if (!mainModal) {
             console.error('Main add/edit modal not found!');
             return;
@@ -159,7 +159,7 @@ export function showDetailModal(cardData, cardElement) { // cardElement is the c
             params.append('card_id', cardData.card_id);
 
             try {
-                const response = await fetch('/webapp/cardServlet', { // Path updated
+                const response = await fetch(cardServletUrl, { // Path updated
                     method: 'POST',
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     body: params
@@ -190,7 +190,7 @@ export function showDetailModal(cardData, cardElement) { // cardElement is the c
         params.append('isFavorite', newFavoriteStatus.toString());
 
         try {
-            const response = await fetch('/webapp/cardServlet', { // Path updated
+            const response = await fetch(cardServletUrl, { // Path updated
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: params
@@ -384,7 +384,7 @@ export async function handleCardSubmission(modal, onSuccessRefreshCallback, rese
     }
     
     try {
-        const response = await fetch('/webapp/cardServlet', { // Path updated
+        const response = await fetch(cardServletUrl, { // Path updated
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
