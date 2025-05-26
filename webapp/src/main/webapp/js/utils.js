@@ -1,10 +1,10 @@
-//モジュール化したJavaScriptコード
+// モジュール化されたJavaScriptコード
 
 
 
 // ---名刺データから詳細表示用のHTML文字列を生成する関数---
 export function generateCardDetailsHTML(data) {
-    // Using fields from CardInfo DTO
+    // CardInfo DTOのフィールドを使用
     const createdDate = data.created_date ? new Date(data.created_date).toLocaleString() : 'N/A';
     const updatedDate = data.update_date ? new Date(data.update_date).toLocaleString() : 'N/A';
 
@@ -27,7 +27,7 @@ export function generateCardDetailsHTML(data) {
 
 // ---単一の名刺カードを生成する関数。クリック時のコールバックも---
 export function createCardElement(cardData, onCardClick) {
-    // cardData is expected to be CardInfo DTO
+    // cardDataはCardInfo DTOであると期待される
     const card = document.createElement('div');
     card.classList.add('card');
     card.innerHTML = `
@@ -39,25 +39,25 @@ export function createCardElement(cardData, onCardClick) {
         <p class="card-department">部署: ${cardData.department_name || 'N/A'}</p>
         <p class="card-position">役職: ${cardData.position_name || 'N/A'}</p>
     `;
-    // Storing the full card data object for easier access later, especially for showDetailModal if it needs it
-    card.dataset.cardId = cardData.card_id; // Use card_id
-    // The generateCardDetailsHTML will be called by showDetailModal, 
-    // or we can pre-generate and store it if the existing showDetailModal structure in home.js expects it.
-    // For now, let's assume onCardClick will handle calling showDetailModal which then generates details.
-    // If showDetailModal in home.js expects details on dataset.details, then uncomment next line:
+    // 後で簡単にアクセスできるように、完全なカードデータオブジェクトを保存する。特にshowDetailModalが必要とする場合
+    card.dataset.cardId = cardData.card_id; // card_idを使用
+    // generateCardDetailsHTMLはshowDetailModalによって呼び出されるか、
+    // home.jsの既存のshowDetailModal構造がそれを期待する場合は事前に生成して保存できる
+    // 現時点では、onCardClickがshowDetailModalを呼び出し、それが詳細を生成すると仮定する
+    // home.jsのshowDetailModalがdataset.detailsの詳細を期待する場合は、次の行のコメントを解除する：
     // card.dataset.details = generateCardDetailsHTML(cardData);
 
 
     card.addEventListener('click', () => {
-        // Pass the full cardData to the click handler.
-        // The original onCardClick(cardData, card) might be from a different structure.
-        // The showDetailModal in home.js expects a card *element* or card *data*.
-        // If using showDetailModal from home.js, it might expect card.dataset.details
-        // Let's ensure it's compatible or adjust.
-        // The current home.js showDetailModal expects a card element with dataset.details.
-        // So, we need to set card.dataset.details here.
+        // 完全なcardDataをクリックハンドラに渡す
+        // 元のonCardClick(cardData, card)は異なる構造かもしれない
+        // home.jsのshowDetailModalはカード*要素*またはカード*データ*を期待する
+        // home.jsのshowDetailModalを使用する場合、card.dataset.detailsを期待するかもしれない
+        // 互換性があることを確認するか、調整する
+        // 現在のhome.jsのshowDetailModalはdataset.detailsを持つカード要素を期待する
+        // そのため、ここでcard.dataset.detailsを設定する必要がある
         card.dataset.details = generateCardDetailsHTML(cardData);
-        onCardClick(card); // Pass the card element itself, which has .dataset.details
+        onCardClick(card); // .dataset.detailsを持つカード要素自体を渡す
     });
 
     return card;
@@ -68,7 +68,7 @@ export function createCardElement(cardData, onCardClick) {
 export function displayCards(cards, cardList, onCardClick) {
     cardList.innerHTML = '';
 
-    if (!Array.isArray(cards) || cards.length === 0) { // Added !Array.isArray(cards) check
+    if (!Array.isArray(cards) || cards.length === 0) { // !Array.isArray(cards)チェックを追加
         const noResultMessage = document.createElement('p');
         noResultMessage.textContent = '該当する名刺がありません。';
         noResultMessage.classList.add('no-result-message');
@@ -107,12 +107,12 @@ export function toggleViewMode(mode) {
 
 
 // ---名刺詳細をモーダルで表示し、編集・削除・お気に入り・閉じるボタンを追加する関数---
-export function showDetailModal(cardData, cardElement) { // cardElement is the card in the main list
+export function showDetailModal(cardData, cardElement) { // cardElementはメインリストのカード
     const detailModal = document.createElement('div');
-    detailModal.classList.add('modal', 'show'); // 'show' class makes it visible
-    detailModal.id = 'dynamicDetailModal'; // Add an ID for easier removal if needed
+    detailModal.classList.add('modal', 'show'); // 'show'クラスで表示されるようにする
+    detailModal.id = 'dynamicDetailModal'; // 必要に応じて簡単に削除できるようにIDを追加
 
-    // Generate details HTML using the already modified generateCardDetailsHTML
+    // 既に変更されたgenerateCardDetailsHTMLを使用して詳細HTMLを生成
     const detailsHTML = generateCardDetailsHTML(cardData);
 
     detailModal.innerHTML = `
@@ -126,15 +126,15 @@ export function showDetailModal(cardData, cardElement) { // cardElement is the c
     `;
     document.body.appendChild(detailModal);
 
-    // Edit button functionality
+    // 編集ボタンの機能
     detailModal.querySelector('.edit-button').addEventListener('click', () => {
-        const mainModal = document.getElementById('addCardModal'); // Assuming this is the ID of your main add/edit modal
+        const mainModal = document.getElementById('addCardModal'); // メインの追加/編集モーダルのIDと仮定
         if (!mainModal) {
-            console.error('Main add/edit modal not found!');
+            console.error('メインの追加/編集モーダルが見つかりません！');
             return;
         }
 
-        // Populate main modal
+        // メインモーダルにデータを入力
         mainModal.querySelector('input[name="card_id"]').value = cardData.card_id;
         mainModal.querySelector('input[name="name"]').value = cardData.name || '';
         mainModal.querySelector('input[name="email"]').value = cardData.email || '';
@@ -147,61 +147,80 @@ export function showDetailModal(cardData, cardElement) { // cardElement is the c
         mainModal.querySelector('input[name="department_name"]').value = cardData.department_name || '';
         mainModal.querySelector('input[name="position_name"]').value = cardData.position_name || '';
 
-        openModal(mainModal); // openModal is imported/available from utils.js
-        document.body.removeChild(detailModal); // Close/remove detail modal
+        openModal(mainModal); // openModalはutils.jsからインポート/利用可能
+        document.body.removeChild(detailModal); // 詳細モーダルを閉じる/削除
     });
 
-    // Delete button functionality
-    detailModal.querySelector('.delete-button').addEventListener('click', async () => {
+    // 削除ボタンの機能
+    detailModal.querySelector('.delete-button').addEventListener('click', () => { // asyncを削除
         if (confirm('この名刺を削除してもよろしいですか？')) {
             const params = new URLSearchParams();
             params.append('action', 'delete');
             params.append('card_id', cardData.card_id);
 
-            try {
-                const response = await fetch('/webapp/cardServlet', { // Path updated
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: params
-                });
-                const result = await response.json();
+            fetch(window.cardServletUrl, { // '/webapp/cardServlet' を window.cardServletUrl に変更
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: params
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(errData => {
+                        throw new Error(`HTTPエラー ${response.status}: ${errData.message || '削除に失敗しました'}`);
+                    }).catch(() => {
+                        throw new Error(`HTTPエラー ${response.status}: 削除に失敗しました`);
+                    });
+                }
+                return response.json();
+            })
+            .then(result => {
                 if (result.success) {
-                    if(cardElement) cardElement.remove(); // Remove card from main list
+                    if(cardElement) cardElement.remove(); // メインリストからカードを削除
                     document.body.removeChild(detailModal);
                     alert('名刺が削除されました。');
-                    // Optionally, refresh the list: loadInitialCards(getDOMSelectors()); if global refresh needed
+                    // オプションでリストを更新: 必要であればloadInitialCards(getDOMSelectors());
                 } else {
                     alert('削除に失敗しました: ' + (result.message || '理由不明'));
                 }
-            } catch (error) {
-                console.error('Error deleting card:', error);
+            })
+            .catch(error => {
+                console.error('カード削除エラー:', error);
                 alert('削除中にエラーが発生しました: ' + error.message);
-            }
+            });
         }
     });
 
-    // Favorite button functionality
+    // お気に入りボタンの機能
     const favoriteButton = detailModal.querySelector('.favorite-button');
-    favoriteButton.addEventListener('click', async () => {
+    favoriteButton.addEventListener('click', () => { // asyncを削除
         const newFavoriteStatus = !cardData.favorite;
         const params = new URLSearchParams();
         params.append('action', 'toggleFavorite');
         params.append('card_id', cardData.card_id);
         params.append('isFavorite', newFavoriteStatus.toString());
 
-        try {
-            const response = await fetch('/webapp/cardServlet', { // Path updated
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: params
-            });
-            const result = await response.json();
+        fetch(window.cardServletUrl, { // '/webapp/cardServlet' を window.cardServletUrl に変更
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: params
+        })
+        .then(response => {
+            if (!response.ok) {
+                 return response.json().then(errData => {
+                    throw new Error(`HTTPエラー ${response.status}: ${errData.message || 'お気に入り状態の更新に失敗しました'}`);
+                }).catch(() => {
+                    throw new Error(`HTTPエラー ${response.status}: お気に入り状態の更新に失敗しました`);
+                });
+            }
+            return response.json();
+        })
+        .then(result => {
             if (result.success) {
-                cardData.favorite = newFavoriteStatus; // Update local data
+                cardData.favorite = newFavoriteStatus; // ローカルデータを更新
                 favoriteButton.textContent = newFavoriteStatus ? '★ お気に入り' : '☆ お気に入り';
-                // To update favorite star on the card in the main list:
+                // メインリストのカードのお気に入りスターを更新するには：
                 if (cardElement) {
-                    const favIndicator = cardElement.querySelector('.card-favorite'); // Assuming class .card-favorite on the star
+                    const favIndicator = cardElement.querySelector('.card-favorite'); // スターに.card-favoriteクラスを想定
                     if (favIndicator) {
                         favIndicator.textContent = newFavoriteStatus ? '★' : '☆';
                     }
@@ -210,20 +229,21 @@ export function showDetailModal(cardData, cardElement) { // cardElement is the c
             } else {
                 alert('お気に入り状態の更新に失敗しました: ' + (result.message || '理由不明'));
             }
-        } catch (error) {
-            console.error('Error toggling favorite:', error);
+        })
+        .catch(error => {
+            console.error('お気に入り切り替えエラー:', error);
             alert('お気に入り状態の更新中にエラーが発生しました: ' + error.message);
-        }
+        });
     });
 
-    // Close button for detail modal
+    // 詳細モーダルの閉じるボタン
     detailModal.querySelector('.close-button').addEventListener('click', () => {
         document.body.removeChild(detailModal);
     });
 
-    // Optional: close detail modal if clicked outside of modal-contents
+    // オプション: modal-contentsの外側をクリックした場合に詳細モーダルを閉じる
     detailModal.addEventListener('click', (event) => {
-        if (event.target === detailModal) { // Clicked on the backdrop
+        if (event.target === detailModal) { // 背景をクリックした場合
             document.body.removeChild(detailModal);
         }
     });
@@ -255,7 +275,7 @@ export function setupModalCloseOnOutsideClick(modal) {
 
 
 // ---モーダルフォーム内のすべてのinputをリセットする関数---
-export function resetModalInputs(modalElement) { // Changed to accept modalElement
+export function resetModalInputs(modalElement) { // モーダル要素を受け入れるように変更
     if (!modalElement) return;
 
     const inputs = modalElement.querySelectorAll('input[type="text"], input[type="email"], input[type="hidden"], textarea');
@@ -297,7 +317,7 @@ export function setActiveLink(navLinks, activeClass = 'active', defaultHref = '#
 }
 
 
-// ---フォームからカードデータを取得する関数---
+// ---フォームからカードデータを取得する関数--- (この関数は古いか、特定のコンテキストでのみ使用されるかもしれません)
 export function getCardFormData() {
     return {
         company: document.querySelector('input[name="company"]').value,
@@ -309,13 +329,13 @@ export function getCardFormData() {
         position: document.querySelector('input[name="position"]').value,
         email: document.querySelector('input[name="email"]').value,
         remarks: document.querySelector('input[name="remarks"]').value,
-        favorite: false
+        favorite: false // デフォルト値
     };
 }
 
 
-// ---バリデーション付きでカードを追加する関数---
-// export function handleCardSubmission(cardList, modal, showDetailModal, resetCallback) { // Old version
+// ---バリデーション付きでカードを追加する関数--- (古いバージョンの可能性あり)
+// export function handleCardSubmission(cardList, modal, showDetailModal, resetCallback) { // 旧バージョン
 //     const cardData = getCardFormData();
 
 //     if (!cardData.name) {
@@ -329,14 +349,14 @@ export function getCardFormData() {
 //     resetCallback();
 // }
 
-// New getCardFormDataFromModal function
+// モーダルからカードフォームデータを取得する新しい関数
 export function getCardFormDataFromModal(modalElement) {
     if (!modalElement) {
-        console.error("Modal element not provided to getCardFormDataFromModal");
+        console.error("モーダル要素がgetCardFormDataFromModalに提供されていません");
         return null;
     }
     const data = {};
-    data.card_id = modalElement.querySelector('input[name="card_id"]')?.value || "0"; // Default to "0" or empty for add
+    data.card_id = modalElement.querySelector('input[name="card_id"]')?.value || "0"; // 追加の場合は "0" または空にデフォルト設定
     data.name = modalElement.querySelector('input[name="name"]')?.value;
     data.email = modalElement.querySelector('input[name="email"]')?.value;
     data.remarks = modalElement.querySelector('textarea[name="remarks"]')?.value;
@@ -354,22 +374,22 @@ export function getCardFormDataFromModal(modalElement) {
 }
 
 
-// Rewritten handleCardSubmission
-export async function handleCardSubmission(modal, onSuccessRefreshCallback, resetCallback) {
+// 書き直されたhandleCardSubmission
+export function handleCardSubmission(modal, onSuccessRefreshCallback, resetCallback) { // asyncを削除
     const formData = getCardFormDataFromModal(modal);
 
     if (!formData) {
         alert('モーダル要素が見つかりません。');
-        return;
+        return; // Promiseを返さないので、単純にreturn
     }
 
     if (!formData.name || !formData.company_name) {
         alert('氏名と会社名は必須です。');
-        return;
+        return; // Promiseを返さないので、単純にreturn
     }
 
     const params = new URLSearchParams();
-    // Determine action: 'add' or 'update'
+    // アクションを決定: 'add' または 'update'
     const cardId = parseInt(formData.card_id, 10);
     if (cardId > 0) {
         params.append('action', 'update');
@@ -383,53 +403,59 @@ export async function handleCardSubmission(modal, onSuccessRefreshCallback, rese
         }
     }
     
-    try {
-        const response = await fetch('/webapp/cardServlet', { // Path updated
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: params
-        });
-
+    fetch(window.cardServletUrl, { // '/webapp/cardServlet' を window.cardServletUrl に変更
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: params
+    })
+    .then(response => {
         if (!response.ok) {
-            const errorData = await response.json().catch(() => null);
-            throw new Error(`HTTP error ${response.status}: ${errorData?.message || 'Failed to add card'}`);
+            // response.json()を試みて、より詳細なエラーメッセージを取得
+            return response.json().then(errorData => {
+                throw new Error(`HTTPエラー ${response.status}: ${errorData?.message || 'カードの追加に失敗しました'}`);
+            }).catch(() => {
+                // response.json()自体が失敗した場合 (例: レスポンスがJSONでない)
+                throw new Error(`HTTPエラー ${response.status}: カードの追加に失敗しました`);
+            });
         }
-
-        const result = await response.json();
+        return response.json();
+    })
+    .then(result => {
         if (result.success) {
-            closeModal(modal); // closeModal needs to be available in this scope
-            if (resetCallback) resetCallback(); // It should reset the form after add/update
-            if (onSuccessRefreshCallback) onSuccessRefreshCallback(); // Refresh the list
+            closeModal(modal); // closeModalはこのスコープで利用可能である必要がある
+            if (resetCallback) resetCallback(); // 追加/更新後にフォームをリセットする必要がある
+            if (onSuccessRefreshCallback) onSuccessRefreshCallback(); // リストを更新
             alert(params.get('action') === 'update' ? '名刺が更新されました。' : '名刺が追加されました。');
         } else {
             alert('カードの保存に失敗しました: ' + (result.message || '理由不明'));
         }
-    } catch (error) {
-        console.error('Error submitting card:', error);
+    })
+    .catch(error => {
+        console.error('カード送信エラー:', error);
         alert('カードの送信中にエラーが発生しました: ' + error.message);
-    }
+    });
 }
 
 
 // ---名刺カードを最近追加順にソートする関数---
-// export function sortCardsByDate(cards) { // This function seems to use 'created_at' which is not in CardInfo.
-//     //スプレット構文　...cards中身取り出して展開
+// export function sortCardsByDate(cards) { // この関数はCardInfoにない'created_at'を使用しているようです。
+//     //スプレット構文 ...cardsの中身を取り出して展開
 //     return [...cards].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 // }
-// If sorting by 'created_date' (Timestamp from CardInfo) is needed:
+// 'created_date' (CardInfoのTimestamp) でソートする場合:
 export function sortCardsByDate(cards) {
     return [...cards].sort((a, b) => {
         const dateA = a.created_date ? new Date(a.created_date).getTime() : 0;
         const dateB = b.created_date ? new Date(b.created_date).getTime() : 0;
-        return dateB - dateA; // For descending order (newest first)
+        return dateB - dateA; // 降順（新しいものが先）
     });
 }
 
 
 // ---名刺カードを最近追加された順にフィルタリングする関数---
-// export function filterCardsByRecentDays(cards, days) { // This function also uses 'created_at'
+// export function filterCardsByRecentDays(cards, days) { // この関数も'created_at'を使用しています
 //     const now = new Date();
 //     return cards.filter(card => {
 //         const createdAt = new Date(card.created_at);
@@ -437,13 +463,13 @@ export function sortCardsByDate(cards) {
 //         return diffDays <= days;
 //     });
 // }
-// If filtering by 'created_date' (Timestamp from CardInfo) is needed:
+// 'created_date' (CardInfoのTimestamp) でフィルタリングする場合:
 export function filterCardsByRecentDays(cards, days) {
     const now = new Date().getTime();
     const daysInMillis = days * 24 * 60 * 60 * 1000;
     return cards.filter(card => {
         const createdAt = card.created_date ? new Date(card.created_date).getTime() : 0;
-        if (createdAt === 0) return false; // Don't include cards without a creation date
+        if (createdAt === 0) return false; // 作成日がないカードは含めない
         return (now - createdAt) <= daysInMillis;
     });
 }

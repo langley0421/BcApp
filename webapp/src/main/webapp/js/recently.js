@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 全てのカードデータを格納する変数
     let allCardsData = [];
 
-    fetch('../cardServlet?action=list')
+    fetch(`${window.cardServletUrl}?action=list`) // グローバル変数 window.cardServletUrl を使用
         .then(res => res.json())
         .then(data => {
             allCardsData = data;
