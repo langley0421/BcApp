@@ -35,9 +35,9 @@ export function createCardElement(cardData, onCardClick) {
             <span class="card-name">${cardData.name || 'N/A'}</span>
             <span class="card-favorite">${cardData.favorite ? '★' : '☆'}</span>
         </div>
-        <p class="card-company">会社: ${cardData.company_name || 'N/A'}</p>
-        <p class="card-department">部署: ${cardData.department_name || 'N/A'}</p>
-        <p class="card-position">役職: ${cardData.position_name || 'N/A'}</p>
+        <p class="card-company">会社: ${cardData.companyName || 'N/A'}</p>
+        <p class="card-department">部署: ${cardData.departmentName || 'N/A'}</p>
+        <p class="card-position">役職: ${cardData.positionName || 'N/A'}</p>
     `;
     // 後で簡単にアクセスできるように、完全なカードデータオブジェクトを保存する。特にshowDetailModalが必要とする場合
     card.dataset.cardId = cardData.card_id; // card_idを使用

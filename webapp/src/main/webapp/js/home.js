@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
     //         displayCards(allCardsData, dom.cardList, showDetailModal); // 初期表示
     //         setupCardFilters(dom, allCardsData);
     //     });
-    // loadInitialCards(dom); // 初期カード読み込み関数の呼び出しを追加
+    loadInitialCards(dom); // 初期カード読み込み関数の呼び出しを追加
 
     // --- 各イベントの初期設定 ---
     setupUIEvents(dom);                

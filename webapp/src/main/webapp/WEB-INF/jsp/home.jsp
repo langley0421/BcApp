@@ -11,8 +11,6 @@
     <script type="text/javascript">
         window.cardServletUrl = "${pageContext.request.contextPath}/cardServlet";
     </script>
-    <script>
-    </script>
 </head>
 <body>
     <header class="header">
@@ -64,15 +62,7 @@
         </div>
 
         <div id="card-list" class="card-list">
-            <c:forEach var="card" items="${cardList}">
-                <div class="card">
-                    <h3>${card.name}</h3>
-                    <p>
-  						${card.companyName}
-						<c:if test="${not empty card.departmentName}">（${card.departmentName}）</c:if>
-					</p>
-                </div>
-            </c:forEach>
+            
         </div>
 
         <div id="modal" class="modal hidden">
