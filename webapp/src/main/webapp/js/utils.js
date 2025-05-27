@@ -3,33 +3,32 @@
 
 
 // ---名刺データから詳細表示用のHTML文字列を生成する関数---
-export function generateCardDetailsHTML(data) {
-    // CardInfo DTOのフィールドを使用
-    const createdDate = data.created_date ? new Date(data.created_date).toLocaleString() : 'N/A';
-    const updatedDate = data.update_date ? new Date(data.update_date).toLocaleString() : 'N/A';
+export function generateCardDetailsHTML(cardData) {
+    console.log("詳細カードデータ:", cardData);
 
     return `
-        <h3>${data.name || 'N/A'}</h3>
-        <p><strong>会社名:</strong> ${data.company_name || 'N/A'}</p>
-        <p><strong>部署:</strong> ${data.department_name || 'N/A'}</p>
-        <p><strong>役職:</strong> ${data.position_name || 'N/A'}</p>
-        <p><strong>Email:</strong> ${data.email || 'N/A'}</p>
-        <p><strong>電話番号 (会社):</strong> ${data.company_phone || 'N/A'}</p>
-        <p><strong>住所 (会社):</strong> ${data.company_address || 'N/A'}</p>
-        <p><strong>郵便番号 (会社):</strong> ${data.company_zipcode || 'N/A'}</p>
-        <p><strong>備考:</strong> ${data.remarks || 'N/A'}</p>
-        <p><strong>お気に入り:</strong> ${data.favorite ? 'はい' : 'いいえ'}</p>
-        <p><strong>作成日時:</strong> ${createdDate}</p>
-        <p><strong>更新日時:</strong> ${updatedDate}</p>
+        <h3>${cardData.name || 'N/A'}</h3>
+        <p><strong>会社名:</strong> ${cardData.companyName || 'N/A'}</p>
+        <p><strong>部署:</strong> ${cardData.departmentName || 'N/A'}</p>
+        <p><strong>役職:</strong> ${cardData.positionName || 'N/A'}</p>
+        <p><strong>Email:</strong> ${cardData.email || 'N/A'}</p>
+        <p><strong>電話番号 (会社):</strong> ${cardData.companyPhone || 'N/A'}</p>
+        <p><strong>住所 (会社):</strong> ${cardData.companyAddress || 'N/A'}</p>
+        <p><strong>郵便番号 (会社):</strong> ${cardData.companyZipcode || 'N/A'}</p>
+        <p><strong>備考:</strong> ${cardData.remarks || 'N/A'}</p>
+        <p><strong>お気に入り:</strong> ${cardData.favorite ? 'はい' : 'いいえ'}</p>
+        <p><strong>作成日時:</strong> ${cardData.createdDate || 'N/A'}</p>
     `;
 }
 
 
+
+
 // ---単一の名刺カードを生成する関数。クリック時のコールバックも---
 export function createCardElement(cardData, onCardClick) {
-    // cardDataはCardInfo DTOであると期待される
     const card = document.createElement('div');
     card.classList.add('card');
+
     card.innerHTML = `
         <div class="card-header">
             <span class="card-name">${cardData.name || 'N/A'}</span>
@@ -39,25 +38,12 @@ export function createCardElement(cardData, onCardClick) {
         <p class="card-department">部署: ${cardData.departmentName || 'N/A'}</p>
         <p class="card-position">役職: ${cardData.positionName || 'N/A'}</p>
     `;
-    // 後で簡単にアクセスできるように、完全なカードデータオブジェクトを保存する。特にshowDetailModalが必要とする場合
-    card.dataset.cardId = cardData.card_id; // card_idを使用
-    // generateCardDetailsHTMLはshowDetailModalによって呼び出されるか、
-    // home.jsの既存のshowDetailModal構造がそれを期待する場合は事前に生成して保存できる
-    // 現時点では、onCardClickがshowDetailModalを呼び出し、それが詳細を生成すると仮定する
-    // home.jsのshowDetailModalがdataset.detailsの詳細を期待する場合は、次の行のコメントを解除する：
-    // card.dataset.details = generateCardDetailsHTML(cardData);
 
+    card.dataset.cardId = cardData.cardId;
 
     card.addEventListener('click', () => {
-        // 完全なcardDataをクリックハンドラに渡す
-        // 元のonCardClick(cardData, card)は異なる構造かもしれない
-        // home.jsのshowDetailModalはカード*要素*またはカード*データ*を期待する
-        // home.jsのshowDetailModalを使用する場合、card.dataset.detailsを期待するかもしれない
-        // 互換性があることを確認するか、調整する
-        // 現在のhome.jsのshowDetailModalはdataset.detailsを持つカード要素を期待する
-        // そのため、ここでcard.dataset.detailsを設定する必要がある
-        card.dataset.details = generateCardDetailsHTML(cardData);
-        onCardClick(card); // .dataset.detailsを持つカード要素自体を渡す
+        // cardDataを直接渡すように変更
+        onCardClick(cardData);
     });
 
     return card;
@@ -156,7 +142,7 @@ export function showDetailModal(cardData, cardElement) { // cardElementはメイ
         if (confirm('この名刺を削除してもよろしいですか？')) {
             const params = new URLSearchParams();
             params.append('action', 'delete');
-            params.append('card_id', cardData.card_id);
+            params.append('cardId', cardData.cardId);
 
             fetch(window.cardServletUrl, { // '/webapp/cardServlet' を window.cardServletUrl に変更
                 method: 'POST',

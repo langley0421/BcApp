@@ -62,7 +62,7 @@ public class CardDAO {
                 card.setFavorite(rs.getBoolean("favorite"));
                 card.setDepartmentName(rs.getString("department_name"));
                 card.setPositionName(rs.getString("position_name"));
-                card.setCreatedAt(rs.getString("created_date"));
+                card.setCreatedDate(rs.getString("created_date"));
 
                 cards.add(card);
             }

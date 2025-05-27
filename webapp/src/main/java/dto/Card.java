@@ -12,7 +12,7 @@ public class Card {
     private boolean favorite;
     private String departmentName;
     private String positionName;
-    private String createdAt;
+    private String createdDate;
 
     // Getter & Setter（略記）
 
@@ -93,10 +93,10 @@ public class Card {
         this.positionName = positionName;
     }
 
-    public String getCreatedAt() {
-        return createdAt;
+    public String getCreatedDate() {
+        return createdDate;
     }
-    public void setCreatedAt(String createdAt) {
-        this.createdAt = createdAt;
+    public void setCreatedDate(String createdDate) {
+        this.createdDate = createdDate;
     }
 }

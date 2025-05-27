@@ -41,7 +41,7 @@ public class CardServlet extends HttpServlet {
             json.append("\"favorite\":").append(card.isFavorite()).append(",");
             json.append("\"departmentName\":\"").append(escape(card.getDepartmentName())).append("\",");
             json.append("\"positionName\":\"").append(escape(card.getPositionName())).append("\",");
-            json.append("\"createdAt\":\"").append(escape(card.getCreatedAt())).append("\"");
+            json.append("\"createdDate\":\"").append(escape(card.getCreatedDate())).append("\"");
             json.append("}");
 
             if (i < cards.size() - 1) {
