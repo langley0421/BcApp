@@ -7,6 +7,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import dao.CardDAO;
 
@@ -33,8 +34,15 @@ public class CardRegisterServlet extends HttpServlet {
 
         // DAOで登録処理
         CardDAO dao = new CardDAO();
-        dao.insertCard(companyName, companyZipcode, companyAddress, companyPhone,
+        boolean registrationSuccess = dao.insertCard(companyName, companyZipcode, companyAddress, companyPhone,
                        departmentName, positionName, name, email, remarks, favorite);
+
+        HttpSession session = request.getSession();
+        if (registrationSuccess) {
+            session.setAttribute("message", "カードが登録されました。");
+        } else {
+            session.setAttribute("error", "カードの登録中にエラーが発生しました。");
+        }
 
         // 登録後、一覧へリダイレクト
         response.sendRedirect(request.getContextPath() + "/home");

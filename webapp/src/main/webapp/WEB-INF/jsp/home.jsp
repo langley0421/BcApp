@@ -8,6 +8,9 @@
     <title>名刺管理</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/home.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/dark_mode.css">
+    <script type="text/javascript">
+        window.cardServletUrl = "${pageContext.request.contextPath}/cardServlet";
+    </script>
     <script>
     </script>
 </head>
@@ -26,12 +29,27 @@
             <li><a href="#section1" class="nav-link">ホーム</a></li>
             <li><a href="#section2" class="nav-link">お気に入り</a></li>
             <li><a href="#section3" class="nav-link">最近追加</a></li>
-            <li><a href="#section4" class="nav-link">名刺検索(仮)</a></li>
             <li><a href="#section5" class="nav-link">アカウント設定</a></li>
         </ul>
     </aside>
 
     <main class="content">
+    <%-- <%
+        String message = (String) session.getAttribute("message");
+        if (message != null) {
+            session.removeAttribute("message");
+    %>
+            <p style="color:green; text-align:center;"><%= message %></p>
+    <%
+        }
+        String error = (String) session.getAttribute("error");
+        if (error != null) {
+            session.removeAttribute("error");
+    %>
+            <p style="color:red; text-align:center;"><%= error %></p>
+    <%
+        }
+    %> --%>
         <div class="search-bar">
             <input type="text" placeholder="名刺を検索 ．．．" class="search-input">
             <button class="search-button">検索</button>
@@ -147,6 +165,26 @@
     <!-- JavaScript -->
     <script type="module" src="${pageContext.request.contextPath}/js/home.js"></script>
     <script type="module" src="${pageContext.request.contextPath}/js/recently.js"></script>
+    <script>
+    // ページ読み込み時にデータ取得
+    window.addEventListener('DOMContentLoaded', () => {
+        fetch('cardServlet')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('ネットワークエラー: ' + response.status);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('取得したカード一覧:', data);
+                // 必要があればここでDOMに反映も可能
+            })
+            .catch(error => {
+                console.error('取得エラー:', error);
+            });
+    });
+</script>
+    
     
 </body>
 </html>

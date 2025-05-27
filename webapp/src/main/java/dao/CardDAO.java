@@ -73,9 +73,10 @@ public class CardDAO {
         return cards;
     }
 
-    public void insertCard(String companyName, String zipcode, String address, String phone,
+    public boolean insertCard(String companyName, String zipcode, String address, String phone,
                            String departmentName, String positionName,
                            String name, String email, String remarks, boolean favorite) {
+        boolean success = false;
         try (Connection conn = getConnection()) {
             conn.setAutoCommit(false);
 
@@ -98,9 +99,12 @@ public class CardDAO {
             }
 
             conn.commit();
+            success = true;
         } catch (SQLException e) {
             e.printStackTrace();
+            // success remains false
         }
+        return success;
     }
 
     private int getOrInsertCompany(Connection conn, String name, String zipcode, String address, String phone) throws SQLException {
