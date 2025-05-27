@@ -37,7 +37,7 @@ public class LoginServlet extends HttpServlet {
             // ログイン成功
             HttpSession session = request.getSession();
             session.setAttribute("username", user.getEmail()); // ユーザー名としてemailを使用
-            response.sendRedirect("/home"); // HomeServletへリダイレクト
+            response.sendRedirect("/webapp/home"); // HomeServletへリダイレクト
         } else {
             // ログイン失敗
             request.setAttribute("error", "メールアドレスまたはパスワードが正しくありません。");

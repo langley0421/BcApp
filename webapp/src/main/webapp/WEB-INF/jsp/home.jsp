@@ -49,9 +49,10 @@
             <c:forEach var="card" items="${cardList}">
                 <div class="card">
                     <h3>${card.name}</h3>
-                    <p>${card.companyName}（${card.positionName}）</p>
-                    <p>${card.departmentName}</p>
-                    <p>${card.email}</p>
+                    <p>
+  						${card.companyName}
+						<c:if test="${not empty card.departmentName}">（${card.departmentName}）</c:if>
+					</p>
                 </div>
             </c:forEach>
         </div>
@@ -59,80 +60,82 @@
         <div id="modal" class="modal hidden">
             <div class="modal-content">
                 <h2>登録フォーム</h2>
-                <table class="modal-table">
-                    <input type="hidden" name="card_id" value="0">
-                    <tr>
-                        <td>
-                            <label>会社名<br>
-                                <input type="text" name="company_name">
-                            </label>
-                        </td>
-                        <td>
-                            <label>郵便番号<br>
-                                <input type="text" name="company_zipcode">
-                            </label>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>氏名（※必須）<br>
-                                <input type="text" name="name">
-                            </label>
-                        </td>
-                        <td>
-                            <label>住所<br>
-                                <input type="text" name="company_address">
-                            </label>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>部署名<br>
-                                <input type="text" name="department_name">
-                            </label>
-                        </td>
-                        <td>
-                            <label>電話番号<br>
-                                <input type="text" name="company_phone">
-                            </label>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>役職名<br>
-                                <input type="text" name="position_name">
-                            </label>
-                        </td>
-                        <td>
-                            <label>メールアドレス<br>
-                                <input type="text" name="email">
-                            </label>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">
-                            <label>備考<br>
-                                <textarea name="remarks"></textarea>
-                            </label>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">
-                            <label>
-                                <input type="checkbox" name="favorite"> お気に入り
-                            </label>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">
-                            <div class="modal-button-container">
-                                <button class="modal-button-submit">送信</button>
-                                <button class="modal-button-reset">リセット</button>
-                            </div>
-                            <span id="error_message"></span>
-                        </td>
-                    </tr>
-                </table>
+                	<form action="${pageContext.request.contextPath}/cardRegister" method="post">
+	                	<table class="modal-table">
+		                    <input type="hidden" name="card_id" value="0">
+		                    <tr>
+		                        <td>
+		                            <label>会社名<br>
+		                                <input type="text" name="company_name">
+		                            </label>
+		                        </td>
+		                        <td>
+		                            <label>郵便番号<br>
+		                                <input type="text" name="company_zipcode">
+		                            </label>
+		                        </td>
+		                    </tr>
+		                    <tr>
+		                        <td>
+		                            <label>氏名（※必須）<br>
+		                                <input type="text" name="name">
+		                            </label>
+		                        </td>
+		                        <td>
+		                            <label>住所<br>
+		                                <input type="text" name="company_address">
+		                            </label>
+		                        </td>
+		                    </tr>
+		                    <tr>
+		                        <td>
+		                            <label>部署名<br>
+		                                <input type="text" name="department_name">
+		                            </label>
+		                        </td>
+		                        <td>
+		                            <label>電話番号<br>
+		                                <input type="text" name="company_phone">
+		                            </label>
+		                        </td>
+		                    </tr>
+		                    <tr>
+		                        <td>
+		                            <label>役職名<br>
+		                                <input type="text" name="position_name">
+		                            </label>
+		                        </td>
+		                        <td>
+		                            <label>メールアドレス<br>
+		                                <input type="text" name="email">
+		                            </label>
+		                        </td>
+		                    </tr>
+		                    <tr>
+		                        <td colspan="2">
+		                            <label>備考<br>
+		                                <textarea name="remarks"></textarea>
+		                            </label>
+		                        </td>
+		                    </tr>
+		                    <tr>
+		                        <td colspan="2">
+		                            <label>
+		                                <input type="checkbox" name="favorite"> お気に入り
+		                            </label>
+		                        </td>
+		                    </tr>
+		                    <tr>
+		                        <td colspan="2">
+		                            <div class="modal-button-container">
+		                                <button type="submit" class="modal-button-submit">送信</button>
+		                                <button type="reset" class="modal-button-reset">リセット</button>
+		                            </div>
+		                            <span id="error_message"></span>
+		                        </td>
+		                    </tr>
+		                </table>
+	            	</form>
                 <button class="close-button">閉じる</button>
             </div>
         </div>

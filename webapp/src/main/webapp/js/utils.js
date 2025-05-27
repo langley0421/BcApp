@@ -374,22 +374,20 @@ export function getCardFormDataFromModal(modalElement) {
 }
 
 
-// 書き直されたhandleCardSubmission
-export function handleCardSubmission(modal, onSuccessRefreshCallback, resetCallback) { // asyncを削除
+export function handleCardSubmission(modal, onSuccessRefreshCallback, resetCallback) {
     const formData = getCardFormDataFromModal(modal);
 
     if (!formData) {
         alert('モーダル要素が見つかりません。');
-        return; // Promiseを返さないので、単純にreturn
+        return;
     }
 
     if (!formData.name || !formData.company_name) {
         alert('氏名と会社名は必須です。');
-        return; // Promiseを返さないので、単純にreturn
+        return;
     }
 
     const params = new URLSearchParams();
-    // アクションを決定: 'add' または 'update'
     const cardId = parseInt(formData.card_id, 10);
     if (cardId > 0) {
         params.append('action', 'update');
@@ -398,11 +396,11 @@ export function handleCardSubmission(modal, onSuccessRefreshCallback, resetCallb
     }
 
     for (const key in formData) {
-        if (formData[key] !== undefined && formData[key] !== null) { 
-             params.append(key, formData[key] === true ? 'true' : formData[key] === false ? 'false' : formData[key]);
+        if (formData[key] !== undefined && formData[key] !== null) {
+            params.append(key, formData[key] === true ? 'true' : formData[key] === false ? 'false' : formData[key]);
         }
     }
-    
+
     fetch(window.cardServletUrl, { // '/webapp/cardServlet' を window.cardServletUrl に変更
         method: 'POST',
         headers: {
@@ -412,32 +410,33 @@ export function handleCardSubmission(modal, onSuccessRefreshCallback, resetCallb
     })
     .then(response => {
         if (!response.ok) {
-            // response.json()を試みて、より詳細なエラーメッセージを取得
             return response.json().then(errorData => {
+                // サーバーから返されたエラーメッセージを取得
                 throw new Error(`HTTPエラー ${response.status}: ${errorData?.message || 'カードの追加に失敗しました'}`);
             }).catch(() => {
-                // response.json()自体が失敗した場合 (例: レスポンスがJSONでない)
+                // JSON 解析に失敗した場合
                 throw new Error(`HTTPエラー ${response.status}: カードの追加に失敗しました`);
             });
         }
-        return response.json();
+        return response.json(); // 成功した場合、JSONデータを返す
     })
     .then(result => {
         if (result.success) {
-            closeModal(modal); // closeModalはこのスコープで利用可能である必要がある
-            if (resetCallback) resetCallback(); // 追加/更新後にフォームをリセットする必要がある
-            if (onSuccessRefreshCallback) onSuccessRefreshCallback(); // リストを更新
+            closeModal(modal); // モーダルを閉じる
+            if (resetCallback) resetCallback(); // 追加/更新後にフォームをリセット
+            if (onSuccessRefreshCallback) onSuccessRefreshCallback(); // リストを更新するコールバック
             alert(params.get('action') === 'update' ? '名刺が更新されました。' : '名刺が追加されました。');
         } else {
+            // 失敗時の処理
             alert('カードの保存に失敗しました: ' + (result.message || '理由不明'));
         }
     })
     .catch(error => {
+        // サーバー側のエラーやネットワークエラーの処理
         console.error('カード送信エラー:', error);
         alert('カードの送信中にエラーが発生しました: ' + error.message);
     });
 }
-
 
 // ---名刺カードを最近追加順にソートする関数---
 // export function sortCardsByDate(cards) { // この関数はCardInfoにない'created_at'を使用しているようです。

@@ -14,7 +14,7 @@ public class CardDAO {
 
     private Connection getConnection() throws SQLException {
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");  // ここでドライバをロード
+            Class.forName("com.mysql.cj.jdbc.Driver");
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
             throw new SQLException("MySQL Driver not found");
@@ -28,22 +28,22 @@ public class CardDAO {
     public List<Card> findAll() {
         List<Card> cards = new ArrayList<>();
         String sql = "SELECT \r\n"
-        		+ "    c.card_id,\r\n"
-        		+ "    c.name,\r\n"
-        		+ "    c.email,\r\n"
-        		+ "    c.remarks,\r\n"
-        		+ "    c.favorite,\r\n"
-        		+ "    com.company_name,\r\n"
-        		+ "    com.zipcode,\r\n"
-        		+ "    com.address,\r\n"
-        		+ "    com.phone,\r\n"
-        		+ "    d.department_name,\r\n"
-        		+ "    p.position_name,\r\n"
-        		+ "    c.created_date\r\n"   // created_at は created_date に合わせました
-        		+ "FROM card c\r\n"
-        		+ "JOIN company com ON c.company_id = com.company_id\r\n"
-        		+ "JOIN department d ON c.department_id = d.department_id\r\n"
-        		+ "JOIN position p ON c.position_id = p.position_id;";
+                + "    c.card_id,\r\n"
+                + "    c.name,\r\n"
+                + "    c.email,\r\n"
+                + "    c.remarks,\r\n"
+                + "    c.favorite,\r\n"
+                + "    com.company_name,\r\n"
+                + "    com.zipcode,\r\n"
+                + "    com.address,\r\n"
+                + "    com.phone,\r\n"
+                + "    d.department_name,\r\n"
+                + "    p.position_name,\r\n"
+                + "    c.created_date\r\n"
+                + "FROM card c\r\n"
+                + "JOIN company com ON c.company_id = com.company_id\r\n"
+                + "JOIN department d ON c.department_id = d.department_id\r\n"
+                + "JOIN position p ON c.position_id = p.position_id;";
 
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
@@ -53,7 +53,7 @@ public class CardDAO {
                 Card card = new Card();
                 card.setCardId(rs.getInt("card_id"));
                 card.setCompanyName(rs.getString("company_name"));
-                card.setCompanyZipcode(rs.getString("zipcode"));  // カラム名に合わせ修正
+                card.setCompanyZipcode(rs.getString("zipcode"));
                 card.setCompanyAddress(rs.getString("address"));
                 card.setCompanyPhone(rs.getString("phone"));
                 card.setName(rs.getString("name"));
@@ -62,7 +62,7 @@ public class CardDAO {
                 card.setFavorite(rs.getBoolean("favorite"));
                 card.setDepartmentName(rs.getString("department_name"));
                 card.setPositionName(rs.getString("position_name"));
-                card.setCreatedAt(rs.getString("created_date"));  // こちらもカラム名に合わせました
+                card.setCreatedAt(rs.getString("created_date"));
 
                 cards.add(card);
             }
@@ -71,5 +71,104 @@ public class CardDAO {
         }
 
         return cards;
+    }
+
+    public void insertCard(String companyName, String zipcode, String address, String phone,
+                           String departmentName, String positionName,
+                           String name, String email, String remarks, boolean favorite) {
+        try (Connection conn = getConnection()) {
+            conn.setAutoCommit(false);
+
+            int companyId = getOrInsertCompany(conn, companyName, zipcode, address, phone);
+            int departmentId = getOrInsertDepartment(conn, departmentName);
+            int positionId = getOrInsertPosition(conn, positionName);
+
+            String sql = "INSERT INTO card (company_id, department_id, position_id, name, email, remarks, favorite) "
+                       + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setInt(1, companyId);
+                stmt.setInt(2, departmentId);
+                stmt.setInt(3, positionId);
+                stmt.setString(4, name);
+                stmt.setString(5, email);
+                stmt.setString(6, remarks);
+                stmt.setBoolean(7, favorite);
+                stmt.executeUpdate();
+            }
+
+            conn.commit();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private int getOrInsertCompany(Connection conn, String name, String zipcode, String address, String phone) throws SQLException {
+        String select = "SELECT company_id FROM company WHERE company_name = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(select)) {
+            stmt.setString(1, name);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("company_id");
+            }
+        }
+
+        String insert = "INSERT INTO company (company_name, zipcode, address, phone) VALUES (?, ?, ?, ?)";
+        try (PreparedStatement stmt = conn.prepareStatement(insert, PreparedStatement.RETURN_GENERATED_KEYS)) {
+            stmt.setString(1, name);
+            stmt.setString(2, zipcode);
+            stmt.setString(3, address);
+            stmt.setString(4, phone);
+            stmt.executeUpdate();
+            ResultSet rs = stmt.getGeneratedKeys();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        }
+        throw new SQLException("Failed to insert company");
+    }
+
+    private int getOrInsertDepartment(Connection conn, String name) throws SQLException {
+        String select = "SELECT department_id FROM department WHERE department_name = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(select)) {
+            stmt.setString(1, name);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("department_id");
+            }
+        }
+
+        String insert = "INSERT INTO department (department_name) VALUES (?)";
+        try (PreparedStatement stmt = conn.prepareStatement(insert, PreparedStatement.RETURN_GENERATED_KEYS)) {
+            stmt.setString(1, name);
+            stmt.executeUpdate();
+            ResultSet rs = stmt.getGeneratedKeys();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        }
+        throw new SQLException("Failed to insert department");
+    }
+
+    private int getOrInsertPosition(Connection conn, String name) throws SQLException {
+        String select = "SELECT position_id FROM position WHERE position_name = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(select)) {
+            stmt.setString(1, name);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("position_id");
+            }
+        }
+
+        String insert = "INSERT INTO position (position_name) VALUES (?)";
+        try (PreparedStatement stmt = conn.prepareStatement(insert, PreparedStatement.RETURN_GENERATED_KEYS)) {
+            stmt.setString(1, name);
+            stmt.executeUpdate();
+            ResultSet rs = stmt.getGeneratedKeys();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        }
+        throw new SQLException("Failed to insert position");
     }
 }
