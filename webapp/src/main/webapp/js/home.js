@@ -91,38 +91,7 @@ function setupCardFilters(dom) { // cardsDataパラメータを削除
     });
 }
 
-// お気に入りカード読み込み関数 (async/await を .then().catch() に変更)
-function loadFavoriteCards(dom) {
-    fetch(`${window.cardServletUrl}?action=list&favorite=true`) // グローバル変数を使用
-        .then(response => {
-            if (!response.ok) {
-                // HTTPエラーの場合、詳細なエラーメッセージを投げる
-                return response.json().then(errData => {
-                    throw new Error(`HTTPエラー! ステータス: ${response.status}, メッセージ: ${errData.message || '不明なエラー'}`);
-                }).catch(() => {
-                    // JSON解析エラーまたはその他のネットワークエラー
-                    throw new Error(`HTTPエラー! ステータス: ${response.status}`);
-                });
-            }
-            return response.json();
-        })
-        .then(cards => {
-            // サーブレットが直接配列を返すか、エラー時に{success: false, message: ...}を返すと仮定
-            if (Array.isArray(cards)) {
-                displayCards(cards, dom.cardList, showDetailModal);
-            } else if (cards && cards.success === false) { // cardsオブジェクトが存在し、successがfalseの場合
-                 console.error('サーブレットからのエラー (お気に入り):', cards.message);
-                 dom.cardList.innerHTML = '<p>お気に入りカードの読み込みに失敗しました。</p>';
-            } else {
-                console.error('お気に入りの予期しないレスポンス形式:', cards);
-                dom.cardList.innerHTML = '<p>お気に入りカードの読み込みに失敗しました: 予期しない形式です。</p>';
-            }
-        })
-        .catch(error => {
-            console.error('お気に入りカードの読み込みに失敗しました:', error);
-            dom.cardList.innerHTML = '<p>お気に入りカードの読み込みに失敗しました。</p>';
-        });
-}
+// お気に入りカード読み込み関数
 
 // 検索実行関数 (async/await を .then().catch() に変更)
 function performSearch(dom) {

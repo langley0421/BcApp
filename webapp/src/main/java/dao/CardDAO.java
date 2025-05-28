@@ -192,35 +192,36 @@ public class CardDAO {
         }
     }
     
- // CardDAO.java に追加
     public boolean updateCard(Card card) {
-        String sql = "UPDATE cards SET company_name = ?, company_zipcode = ?, company_address = ?, " +
-                     "company_phone = ?, name = ?, email = ?, remarks = ?, favorite = ?, " +
-                     "department_name = ?, position_name = ? WHERE card_id = ?";
+        try (Connection conn = getConnection()) {
+            conn.setAutoCommit(false);
 
-        try (Connection conn = getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            int companyId = getOrInsertCompany(conn, card.getCompanyName(), card.getCompanyZipcode(), card.getCompanyAddress(), card.getCompanyPhone());
+            int departmentId = getOrInsertDepartment(conn, card.getDepartmentName());
+            int positionId = getOrInsertPosition(conn, card.getPositionName());
 
-            stmt.setString(1, card.getCompanyName());
-            stmt.setString(2, card.getCompanyZipcode());
-            stmt.setString(3, card.getCompanyAddress());
-            stmt.setString(4, card.getCompanyPhone());
-            stmt.setString(5, card.getName());
-            stmt.setString(6, card.getEmail());
-            stmt.setString(7, card.getRemarks());
-            stmt.setBoolean(8, card.isFavorite());
-            stmt.setString(9, card.getDepartmentName());
-            stmt.setString(10, card.getPositionName());
-            stmt.setInt(11, card.getCardId());
+            String sql = "UPDATE card SET company_id = ?, department_id = ?, position_id = ?, name = ?, email = ?, remarks = ?, favorite = ? WHERE card_id = ?";
 
-            int rowsUpdated = stmt.executeUpdate();
-            return rowsUpdated > 0;
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setInt(1, companyId);
+                stmt.setInt(2, departmentId);
+                stmt.setInt(3, positionId);
+                stmt.setString(4, card.getName());
+                stmt.setString(5, card.getEmail());
+                stmt.setString(6, card.getRemarks());
+                stmt.setBoolean(7, card.isFavorite());
+                stmt.setInt(8, card.getCardId());
 
-        } catch (Exception e) {
+                int rowsUpdated = stmt.executeUpdate();
+                conn.commit();
+                return rowsUpdated > 0;
+            }
+        } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
     }
+
 
 
 }
