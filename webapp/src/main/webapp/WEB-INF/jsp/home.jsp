@@ -148,87 +148,87 @@
             </div>
         </div>
         <div id="edit-modal" class="modal hidden">
-    <div class="modal-content">
-        <h2>編集フォーム</h2>
-        <form action="${pageContext.request.contextPath}/cardEdit" method="post">
-            <table class="modal-table">
-                <input type="hidden" name="card_id" value="${card.cardId}">
-                <tr>
-                    <td>
-                        <label>会社名<br>
-                            <input type="text" name="company_name" value="${card.companyName}">
-                        </label>
-                    </td>
-                    <td>
-                        <label>郵便番号<br>
-                            <input type="text" name="company_zipcode" value="${card.companyZipcode}">
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <label>氏名（※必須）<br>
-                            <input type="text" name="name" value="${card.name}">
-                        </label>
-                    </td>
-                    <td>
-                        <label>住所<br>
-                            <input type="text" name="company_address" value="${card.companyAddress}">
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <label>部署名<br>
-                            <input type="text" name="department_name" value="${card.departmentName}">
-                        </label>
-                    </td>
-                    <td>
-                        <label>電話番号<br>
-                            <input type="text" name="company_phone" value="${card.companyPhone}">
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <label>役職名<br>
-                            <input type="text" name="position_name" value="${card.positionName}">
-                        </label>
-                    </td>
-                    <td>
-                        <label>メールアドレス<br>
-                            <input type="text" name="email" value="${card.email}">
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        <label>備考<br>
-                            <textarea name="remarks">${card.remarks}</textarea>
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        <label>
-                            <input type="checkbox" name="favorite" ${card.favorite ? "checked" : ""}> お気に入り
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        <div class="modal-button-container">
-                            <button type="submit" class="modal-button-submit">保存</button>
-                            <button type="reset" class="modal-button-reset">リセット</button>
-                        </div>
-                        <span id="edit_error_message"></span>
-                    </td>
-                </tr>
-            </table>
-        </form>
-        <button class="close-button">閉じる</button>
-    </div>
-</div>
+		    <div class="modal-content">
+		        <h2>編集フォーム</h2>
+		        <form action="${pageContext.request.contextPath}/cardEdit" method="post">
+		            <table class="modal-table">
+		                <input type="hidden" name="card_id" value="${card.cardId}">
+		                <tr>
+		                    <td>
+		                        <label>会社名<br>
+		                            <input type="text" name="company_name" value="${card.companyName}">
+		                        </label>
+		                    </td>
+		                    <td>
+		                        <label>郵便番号<br>
+		                            <input type="text" name="company_zipcode" value="${card.companyZipcode}">
+		                        </label>
+		                    </td>
+		                </tr>
+		                <tr>
+		                    <td>
+		                        <label>氏名（※必須）<br>
+		                            <input type="text" name="name" value="${card.name}">
+		                        </label>
+		                    </td>
+		                    <td>
+		                        <label>住所<br>
+		                            <input type="text" name="company_address" value="${card.companyAddress}">
+		                        </label>
+		                    </td>
+		                </tr>
+		                <tr>
+		                    <td>
+		                        <label>部署名<br>
+		                            <input type="text" name="department_name" value="${card.departmentName}">
+		                        </label>
+		                    </td>
+		                    <td>
+		                        <label>電話番号<br>
+		                            <input type="text" name="company_phone" value="${card.companyPhone}">
+		                        </label>
+		                    </td>
+		                </tr>
+		                <tr>
+		                    <td>
+		                        <label>役職名<br>
+		                            <input type="text" name="position_name" value="${card.positionName}">
+		                        </label>
+		                    </td>
+		                    <td>
+		                        <label>メールアドレス<br>
+		                            <input type="text" name="email" value="${card.email}">
+		                        </label>
+		                    </td>
+		                </tr>
+		                <tr>
+		                    <td colspan="2">
+		                        <label>備考<br>
+		                            <textarea name="remarks">${card.remarks}</textarea>
+		                        </label>
+		                    </td>
+		                </tr>
+		                <tr>
+		                    <td colspan="2">
+		                        <label>
+		                            <input type="checkbox" name="favorite" ${card.favorite ? "checked" : ""}> お気に入り
+		                        </label>
+		                    </td>
+		                </tr>
+		                <tr>
+		                    <td colspan="2">
+		                        <div class="modal-button-container">
+		                            <button type="submit" class="modal-button-submit">保存</button>
+		                            <button type="reset" class="modal-button-reset">リセット</button>
+		                        </div>
+		                        <span id="edit_error_message"></span>
+		                    </td>
+		                </tr>
+		            </table>
+		        </form>
+		        <button class="close-button">閉じる</button>
+		    </div>
+		</div>
         
         <button class="add-button">
             <span>＋</span>

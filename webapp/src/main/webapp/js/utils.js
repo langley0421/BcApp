@@ -155,13 +155,19 @@ export function showDetailModal(cardData, cardElement) { // cardElementはメイ
         modal.querySelector('input[name="position_name"]').value = cardData.positionName;
         modal.querySelector('input[name="favorite"]').checked = cardData.favorite;
 
-        
-         const editModalCloseButton = modal.querySelector('.close-button');
-         if (editModalCloseButton) { 
-             editModalCloseButton.addEventListener('click', () => {
-                 closeModal(modal); 
-             });
-         }
+        // The close button listener for #edit-modal should be set up globally, not here.
+        // Removing the re-binding:
+        // const editModalCloseButton = modal.querySelector('.close-button');
+        // if (editModalCloseButton) { 
+        //     editModalCloseButton.addEventListener('click', () => {
+        //         closeModal(modal); 
+        //     });
+        // }
+
+        // Remove the detailModal from the DOM as it's no longer needed
+        if (detailModal.parentNode === document.body) {
+            document.body.removeChild(detailModal);
+        }
     });
 
 
