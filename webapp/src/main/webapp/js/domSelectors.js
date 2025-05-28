@@ -11,7 +11,7 @@ export function getDOMSelectors() {
         navLinks: document.querySelectorAll('.sidebar .nav-link'),
         addButton: document.querySelector('.add-button'),
         modal: document.querySelector('.modal'),
-        editModal:document.querySelector('.edit-modal')
+        editModal:document.querySelector('.edit-modal'),
         closeButton: document.querySelector('.close-button'),
         resetButton: document.querySelector('.modal-button-reset'),
         submitButton: document.querySelector('.modal-button-submit'),
