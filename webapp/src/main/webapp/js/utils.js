@@ -96,7 +96,7 @@ export function toggleViewMode(mode) {
 export function showDetailModal(cardData, cardElement) { // cardElementはメインリストのカード
     const detailModal = document.createElement('div');
     detailModal.classList.add('modal', 'show'); // 'show'クラスで表示されるようにする
-    detailModal.classList.add('edit-modal','show-edit-modal')
+    // detailModal.classList.add('edit-modal','show-edit-modal') // Removed as per request
     detailModal.id = 'dynamicDetailModal'; // 必要に応じて簡単に削除できるようにIDを追加
 
     // 既に変更されたgenerateCardDetailsHTMLを使用して詳細HTMLを生成
@@ -114,32 +114,55 @@ export function showDetailModal(cardData, cardElement) { // cardElementはメイ
     document.body.appendChild(detailModal);
 
     // 編集ボタンの機能
-    document.querySelectorAll('.edit-button').forEach(button => {
-    button.addEventListener('click', () => {
-        const card = JSON.parse(button.dataset.card); // ボタンのdata属性にカード情報を持たせると便利
-
+    const editButton = detailModal.querySelector('.edit-button');
+    editButton.addEventListener('click', () => {
+        console.log('Edit button clicked for card:', cardData);
         const modal = document.getElementById('edit-modal');
-        modal.classList.remove('hidden'); // 表示
 
-        // フォームの各フィールドにデータをセット
-        modal.querySelector('input[name="card_id"]').value = card.cardId;
-        modal.querySelector('input[name="company_name"]').value = card.companyName;
-        modal.querySelector('input[name="company_zipcode"]').value = card.companyZipcode;
-        modal.querySelector('input[name="company_address"]').value = card.companyAddress;
-        modal.querySelector('input[name="company_phone"]').value = card.companyPhone;
-        modal.querySelector('input[name="name"]').value = card.name;
-        modal.querySelector('input[name="email"]').value = card.email;
-        modal.querySelector('textarea[name="remarks"]').value = card.remarks;
-        modal.querySelector('input[name="department_name"]').value = card.departmentName;
-        modal.querySelector('input[name="position_name"]').value = card.positionName;
-        modal.querySelector('input[name="favorite"]').checked = card.favorite;
+        if (!modal) {
+            console.error('#edit-modal not found in the DOM!');
+            alert('Error: Edit form is missing. Please contact support.'); // User-facing error
+            return;
+        }
 
-        // 閉じるボタンの設定
-        modal.querySelector('.close-button').addEventListener('click', () => {
-            modal.classList.add('hidden'); // 非表示
-        });
+        console.log('Attempting to show #edit-modal');
+        openModal(modal); // 表示
+        console.log('#edit-modal classList after openModal:', modal.classList);
+
+        // フォームの各フィールドにデータをセット (cardData を直接使用)
+        const cardIdInput = modal.querySelector('input[name="card_id"]');
+        if (cardIdInput) {
+            cardIdInput.value = cardData.cardId;
+        } else {
+            console.error('input[name="card_id"] not found in #edit-modal');
+        }
+
+        modal.querySelector('input[name="company_name"]').value = cardData.companyName;
+        modal.querySelector('input[name="company_zipcode"]').value = cardData.companyZipcode;
+        modal.querySelector('input[name="company_address"]').value = cardData.companyAddress;
+        modal.querySelector('input[name="company_phone"]').value = cardData.companyPhone;
+
+        const nameInput = modal.querySelector('input[name="name"]');
+        if (nameInput) {
+            nameInput.value = cardData.name;
+        } else {
+            console.error('input[name="name"] not found in #edit-modal');
+        }
+
+        modal.querySelector('input[name="email"]').value = cardData.email;
+        modal.querySelector('textarea[name="remarks"]').value = cardData.remarks;
+        modal.querySelector('input[name="department_name"]').value = cardData.departmentName;
+        modal.querySelector('input[name="position_name"]').value = cardData.positionName;
+        modal.querySelector('input[name="favorite"]').checked = cardData.favorite;
+
+        
+         const editModalCloseButton = modal.querySelector('.close-button');
+         if (editModalCloseButton) { 
+             editModalCloseButton.addEventListener('click', () => {
+                 closeModal(modal); 
+             });
+         }
     });
-});
 
 
 
