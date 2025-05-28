@@ -7,7 +7,8 @@ import {
     handleCardSubmission,               
     displayCards,                       
     toggleViewMode,                     
-    showDetailModal                     
+    showDetailModal,
+    createCardElement             
 } from './utils.js';
 
 import { 
@@ -93,45 +94,56 @@ function setupCardFilters(dom) { // cardsDataパラメータを削除
 
 // お気に入りカード読み込み関数 (async/await を .then().catch() に変更)
 
-// 検索実行関数 (async/await を .then().catch() に変更)
-function performSearch(dom) {
-    const query = dom.searchInput.value.trim();
-    // オプション: クエリが空の場合、全カードを読み込むかメッセージを表示
-    if (!query) {
-        // loadInitialCards(dom); // または "検索語を入力してください" というメッセージを表示
-        // 現時点では、サーバーが空の検索語を全カードを返すように設計されている場合はサーバーに処理させる
-        // または、空の検索を防止する:
-        // dom.cardList.innerHTML = '<p>検索語を入力してください。</p>';
-        // return; 
-    }
-    fetch(`${window.cardServletUrl}?action=list&searchTerm=${encodeURIComponent(query)}`) // グローバル変数を使用
+// 検索実行関数
+function onCardClick(cardData) {
+    console.log('カードがクリックされました:', cardData);
+    showDetailModal(cardData); // モーダル表示関数にカード情報を渡す
+    // 例: 詳細表示など
+}
+
+window.performSearch = function () {
+    const keyword = document.getElementById('searchInput').value;
+    const cardList = document.getElementById('card-list');
+
+    cardList.innerHTML = '';
+
+    fetch('/webapp/searchCard?keyword=' + encodeURIComponent(keyword))
         .then(response => {
             if (!response.ok) {
-                return response.json().then(errData => {
-                    throw new Error(`HTTPエラー! ステータス: ${response.status}, メッセージ: ${errData.message || '不明なエラー'}`);
-                }).catch(() => {
-                    throw new Error(`HTTPエラー! ステータス: ${response.status}`);
-                });
+                throw new Error('HTTPエラー: ' + response.status);
             }
             return response.json();
         })
-        .then(cards => {
-            // サーブレットが直接配列を返すか、エラー時に{success: false, message: ...}を返すと仮定
-            if (Array.isArray(cards)) {
-                displayCards(cards, dom.cardList, showDetailModal);
-            } else if (cards && cards.success === false) {
-                 console.error('サーブレットからのエラー (検索):', cards.message);
-                 dom.cardList.innerHTML = '<p>検索の実行に失敗しました。</p>';
-            } else {
-                console.error('検索の予期しないレスポンス形式:', cards);
-                dom.cardList.innerHTML = '<p>検索の実行に失敗しました: 予期しない形式です。</p>';
+        .then(data => {
+            console.log('受け取ったデータ:', data);
+
+            if (data.length === 0) {
+                cardList.textContent = '該当する名刺はありません。';
+                return;
             }
+
+            data.forEach(cardData => {
+                const cardElement = createCardElement(cardData, onCardClick);
+                cardList.appendChild(cardElement);
+            });
         })
         .catch(error => {
-            console.error('検索の実行に失敗しました:', error);
-            dom.cardList.innerHTML = '<p>検索に失敗しました。</p>';
+            console.error('検索エラー:', error);
+            cardList.textContent = '検索中にエラーが発生しました。';
         });
-}
+};
+
+// ページ読み込み時にフォームのsubmitイベントに登録し、クリックの二重発火防止
+document.addEventListener('DOMContentLoaded', () => {
+    const searchForm = document.getElementById('searchForm');
+    if (searchForm) {
+        searchForm.addEventListener('submit', (event) => {
+            event.preventDefault();  // フォームの送信を止める
+            window.performSearch();  // performSearchを呼ぶ
+        });
+    }
+});
+
 
 // 初期カード読み込み関数 (async/await を .then().catch() に変更)
 function loadInitialCards(dom) {

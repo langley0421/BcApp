@@ -125,7 +125,6 @@ export function showDetailModal(cardData, cardElement) { // cardElementはメイ
             return;
         }
 
-        console.log('Attempting to show #edit-modal');
         openModal(modal); // 表示
         console.log('#edit-modal classList after openModal:', modal.classList);
 
@@ -155,19 +154,17 @@ export function showDetailModal(cardData, cardElement) { // cardElementはメイ
         modal.querySelector('input[name="position_name"]').value = cardData.positionName;
         modal.querySelector('input[name="favorite"]').checked = cardData.favorite;
 
-        // The close button listener for #edit-modal should be set up globally, not here.
-        // Removing the re-binding:
-        // const editModalCloseButton = modal.querySelector('.close-button');
-        // if (editModalCloseButton) { 
-        //     editModalCloseButton.addEventListener('click', () => {
-        //         closeModal(modal); 
-        //     });
-        // }
+         const editModalCloseButton = modal.querySelector('.close-button');
+         if (editModalCloseButton) { 
+             editModalCloseButton.addEventListener('click', () => {
+                closeModal(modal); 
+             });
+         }
 
-        // Remove the detailModal from the DOM as it's no longer needed
-        if (detailModal.parentNode === document.body) {
-            document.body.removeChild(detailModal);
-        }
+        // 詳細モーダルは非表示にする（または削除）
+    	if (detailModal && detailModal.parentNode) {
+        	detailModal.parentNode.removeChild(detailModal);
+    }
     });
 
 
@@ -312,7 +309,7 @@ export function getCardFormData() {
 }
 
 
-// モーダルからカードフォームデータを取得する新しい関数
+// モーダルからカードフォームデータを取得する関数
 export function getCardFormDataFromModal(modalElement) {
     if (!modalElement) {
         console.error("モーダル要素がgetCardFormDataFromModalに提供されていません");
@@ -364,7 +361,7 @@ export function handleCardSubmission(modal, onSuccessRefreshCallback, resetCallb
         }
     }
 
-    fetch(window.cardServletUrl, { // '/webapp/cardServlet' を window.cardServletUrl に変更
+    fetch(window.cardServletUrl, { 
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
@@ -402,7 +399,7 @@ export function handleCardSubmission(modal, onSuccessRefreshCallback, resetCallb
 }
 
 // ---名刺カードを最近追加順にソートする関数---
-// export function sortCardsByDate(cards) { // この関数はCardInfoにない'created_at'を使用しているようです。
+// export function sortCardsByDate(cards) { 
 //     //スプレット構文 ...cardsの中身を取り出して展開
 //     return [...cards].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 // }
@@ -417,7 +414,7 @@ export function sortCardsByDate(cards) {
 
 
 // ---名刺カードを最近追加された順にフィルタリングする関数---
-// export function filterCardsByRecentDays(cards, days) { // この関数も'created_at'を使用しています
+// export function filterCardsByRecentDays(cards, days) { 
 //     const now = new Date();
 //     return cards.filter(card => {
 //         const createdAt = new Date(card.created_at);
