@@ -96,6 +96,7 @@ export function toggleViewMode(mode) {
 export function showDetailModal(cardData, cardElement) { // cardElementはメインリストのカード
     const detailModal = document.createElement('div');
     detailModal.classList.add('modal', 'show'); // 'show'クラスで表示されるようにする
+    detailModal.classList.add('edit-modal','show-edit-modal')
     detailModal.id = 'dynamicDetailModal'; // 必要に応じて簡単に削除できるようにIDを追加
 
     // 既に変更されたgenerateCardDetailsHTMLを使用して詳細HTMLを生成
@@ -113,29 +114,34 @@ export function showDetailModal(cardData, cardElement) { // cardElementはメイ
     document.body.appendChild(detailModal);
 
     // 編集ボタンの機能
-    detailModal.querySelector('.edit-button').addEventListener('click', () => {
-        const mainModal = document.getElementById('modal'); // Changed to 'modal'
-        if (!mainModal) {
-            console.error('メインの追加/編集モーダルが見つかりません！');
-            return;
-        }
+    document.querySelectorAll('.edit-button').forEach(button => {
+    button.addEventListener('click', () => {
+        const card = JSON.parse(button.dataset.card); // ボタンのdata属性にカード情報を持たせると便利
 
-        // メインモーダルにデータを入力
-        mainModal.querySelector('input[name="card_id"]').value = cardData.card_id;
-        mainModal.querySelector('input[name="name"]').value = cardData.name || '';
-        mainModal.querySelector('input[name="email"]').value = cardData.email || '';
-        mainModal.querySelector('textarea[name="remarks"]').value = cardData.remarks || '';
-        mainModal.querySelector('input[name="favorite"]').checked = cardData.favorite;
-        mainModal.querySelector('input[name="company_name"]').value = cardData.company_name || '';
-        mainModal.querySelector('input[name="company_zipcode"]').value = cardData.company_zipcode || '';
-        mainModal.querySelector('input[name="company_address"]').value = cardData.company_address || '';
-        mainModal.querySelector('input[name="company_phone"]').value = cardData.company_phone || '';
-        mainModal.querySelector('input[name="department_name"]').value = cardData.department_name || '';
-        mainModal.querySelector('input[name="position_name"]').value = cardData.position_name || '';
+        const modal = document.getElementById('edit-modal');
+        modal.classList.remove('hidden'); // 表示
 
-        openModal(mainModal); // openModalはutils.jsからインポート/利用可能
-        document.body.removeChild(detailModal); // 詳細モーダルを閉じる/削除
+        // フォームの各フィールドにデータをセット
+        modal.querySelector('input[name="card_id"]').value = card.cardId;
+        modal.querySelector('input[name="company_name"]').value = card.companyName;
+        modal.querySelector('input[name="company_zipcode"]').value = card.companyZipcode;
+        modal.querySelector('input[name="company_address"]').value = card.companyAddress;
+        modal.querySelector('input[name="company_phone"]').value = card.companyPhone;
+        modal.querySelector('input[name="name"]').value = card.name;
+        modal.querySelector('input[name="email"]').value = card.email;
+        modal.querySelector('textarea[name="remarks"]').value = card.remarks;
+        modal.querySelector('input[name="department_name"]').value = card.departmentName;
+        modal.querySelector('input[name="position_name"]').value = card.positionName;
+        modal.querySelector('input[name="favorite"]').checked = card.favorite;
+
+        // 閉じるボタンの設定
+        modal.querySelector('.close-button').addEventListener('click', () => {
+            modal.classList.add('hidden'); // 非表示
+        });
     });
+});
+
+
 
     // 削除ボタンの機能
     detailModal.querySelector('.delete-button').addEventListener('click', () => { // asyncを削除
@@ -164,7 +170,7 @@ export function showDetailModal(cardData, cardElement) { // cardElementはメイ
                     if(cardElement) cardElement.remove(); // メインリストからカードを削除
                     document.body.removeChild(detailModal);
                     alert('名刺が削除されました。');
-                    // オプションでリストを更新: 必要であればloadInitialCards(getDOMSelectors());
+                    setTimeout(() => location.reload(), 100); // ←これが一番安定しやすい
                 } else {
                     alert('削除に失敗しました: ' + (result.message || '理由不明'));
                 }
@@ -177,50 +183,7 @@ export function showDetailModal(cardData, cardElement) { // cardElementはメイ
     });
 
     // お気に入りボタンの機能
-    const favoriteButton = detailModal.querySelector('.favorite-button');
-    favoriteButton.addEventListener('click', () => { // asyncを削除
-        const newFavoriteStatus = !cardData.favorite;
-        const params = new URLSearchParams();
-        params.append('action', 'toggleFavorite');
-        params.append('card_id', cardData.card_id);
-        params.append('isFavorite', newFavoriteStatus.toString());
-
-        fetch(window.cardServletUrl, { // '/webapp/cardServlet' を window.cardServletUrl に変更
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: params
-        })
-        .then(response => {
-            if (!response.ok) {
-                 return response.json().then(errData => {
-                    throw new Error(`HTTPエラー ${response.status}: ${errData.message || 'お気に入り状態の更新に失敗しました'}`);
-                }).catch(() => {
-                    throw new Error(`HTTPエラー ${response.status}: お気に入り状態の更新に失敗しました`);
-                });
-            }
-            return response.json();
-        })
-        .then(result => {
-            if (result.success) {
-                cardData.favorite = newFavoriteStatus; // ローカルデータを更新
-                favoriteButton.textContent = newFavoriteStatus ? '★ お気に入り' : '☆ お気に入り';
-                // メインリストのカードのお気に入りスターを更新するには：
-                if (cardElement) {
-                    const favIndicator = cardElement.querySelector('.card-favorite'); // スターに.card-favoriteクラスを想定
-                    if (favIndicator) {
-                        favIndicator.textContent = newFavoriteStatus ? '★' : '☆';
-                    }
-                }
-                 alert('お気に入り状態が更新されました。');
-            } else {
-                alert('お気に入り状態の更新に失敗しました: ' + (result.message || '理由不明'));
-            }
-        })
-        .catch(error => {
-            console.error('お気に入り切り替えエラー:', error);
-            alert('お気に入り状態の更新中にエラーが発生しました: ' + error.message);
-        });
-    });
+    
 
     // 詳細モーダルの閉じるボタン
     detailModal.querySelector('.close-button').addEventListener('click', () => {
@@ -303,7 +266,7 @@ export function setActiveLink(navLinks, activeClass = 'active', defaultHref = '#
 }
 
 
-// ---フォームからカードデータを取得する関数--- (この関数は古いか、特定のコンテキストでのみ使用されるかもしれません)
+// ---フォームからカードデータを取得する関数--- 
 export function getCardFormData() {
     return {
         company: document.querySelector('input[name="company"]').value,
@@ -319,21 +282,6 @@ export function getCardFormData() {
     };
 }
 
-
-// ---バリデーション付きでカードを追加する関数--- (古いバージョンの可能性あり)
-// export function handleCardSubmission(cardList, modal, showDetailModal, resetCallback) { // 旧バージョン
-//     const cardData = getCardFormData();
-
-//     if (!cardData.name) {
-//         alert('氏名は必須です。');
-//         return;
-//     }
-
-//     const card = createCardElement(cardData, showDetailModal);
-//     cardList.appendChild(card);
-//     closeModal(modal);
-//     resetCallback();
-// }
 
 // モーダルからカードフォームデータを取得する新しい関数
 export function getCardFormDataFromModal(modalElement) {

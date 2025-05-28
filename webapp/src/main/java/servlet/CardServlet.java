@@ -53,6 +53,29 @@ public class CardServlet extends HttpServlet {
         out.print(json.toString());
     }
 
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String action = req.getParameter("action");
+
+        if ("delete".equals(action)) {
+            String cardIdStr = req.getParameter("cardId");
+            int cardId = Integer.parseInt(cardIdStr);
+
+            CardDAO dao = new CardDAO();
+            boolean success = dao.deleteCardById(cardId);
+
+            resp.setContentType("application/json;charset=UTF-8");
+            PrintWriter out = resp.getWriter();
+
+            if (success) {
+                out.print("{\"success\": true}");
+            } else {
+                out.print("{\"success\": false, \"message\": \"削除に失敗しました。\"}");
+            }
+            out.flush();
+        }
+    }
+
     // JSON用の文字列エスケープ（最低限）
     private String escape(String str) {
         if (str == null) return "";
