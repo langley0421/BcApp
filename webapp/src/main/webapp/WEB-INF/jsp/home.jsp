@@ -49,10 +49,10 @@
         }
     %> --%>
         <div class="search-bar">
-            <input type="text" placeholder="名刺を検索 ．．．" class="search-input">
-            <button class="search-button">検索</button>
-        </div>
-        
+    		<input type="text" placeholder="名刺を検索 ．．．" class="search-input" id="searchInput">
+    		<button class="search-button" onclick="performSearch({ searchInput: document.getElementById('searchInput'), cardList: document.getElementById('cardList') })">検索</button>
+		</div>
+
         <div id="recent-filter" class="recent-filter hidden">
           <label>
               何日以内:

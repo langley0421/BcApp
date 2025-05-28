@@ -222,6 +222,47 @@ public class CardDAO {
         }
     }
 
+    public List<Card> searchCardsByKeyword(String keyword) {
+        List<Card> cards = new ArrayList<>();
+        String sql = "SELECT c.card_id, c.name, c.email, c.remarks, c.favorite, "
+                   + "com.company_name, com.zipcode, com.address, com.phone, "
+                   + "d.department_name, p.position_name, c.created_date "
+                   + "FROM card c "
+                   + "JOIN company com ON c.company_id = com.company_id "
+                   + "JOIN department d ON c.department_id = d.department_id "
+                   + "JOIN position p ON c.position_id = p.position_id "
+                   + "WHERE c.name LIKE ? OR c.email LIKE ? OR com.company_name LIKE ? OR d.department_name LIKE ? OR p.position_name LIKE ?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            String like = "%" + keyword + "%";
+            for (int i = 1; i <= 5; i++) {
+                stmt.setString(i, like);
+            }
+
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Card card = new Card();
+                card.setCardId(rs.getInt("card_id"));
+                card.setName(rs.getString("name"));
+                card.setEmail(rs.getString("email"));
+                card.setRemarks(rs.getString("remarks"));
+                card.setFavorite(rs.getBoolean("favorite"));
+                card.setCompanyName(rs.getString("company_name"));
+                card.setCompanyZipcode(rs.getString("zipcode"));
+                card.setCompanyAddress(rs.getString("address"));
+                card.setCompanyPhone(rs.getString("phone"));
+                card.setDepartmentName(rs.getString("department_name"));
+                card.setPositionName(rs.getString("position_name"));
+                card.setCreatedDate(rs.getString("created_date"));
+                cards.add(card);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return cards;
+    }
 
 
 }

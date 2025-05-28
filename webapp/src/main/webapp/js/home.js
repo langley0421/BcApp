@@ -91,7 +91,7 @@ function setupCardFilters(dom) { // cardsDataパラメータを削除
     });
 }
 
-// お気に入りカード読み込み関数
+// お気に入りカード読み込み関数 (async/await を .then().catch() に変更)
 
 // 検索実行関数 (async/await を .then().catch() に変更)
 function performSearch(dom) {
