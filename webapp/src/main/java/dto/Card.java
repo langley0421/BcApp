@@ -14,7 +14,6 @@ public class Card {
     private String positionName;
     private String createdDate;
 
-    // Getter & Setter（略記）
 
     public int getCardId() {
         return cardId;

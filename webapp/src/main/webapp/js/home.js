@@ -4,7 +4,6 @@ import {
     openModal, closeModal,              
     resetModalInputs,                   
     setupModalCloseOnOutsideClick,      
-    handleCardSubmission,               
     displayCards,                       
     toggleViewMode,                     
     showDetailModal,
@@ -15,26 +14,14 @@ import {
     getDOMSelectors                    
 } from './domSelectors.js';
 
-// const SERVLET_BASE_URL = '/webapp/cardServlet'; // 削除: グローバル変数 window.cardServletUrl を使用します
-
 document.addEventListener('DOMContentLoaded', () => {
     const dom = getDOMSelectors();     // DOM要素をまとめて取得
-    // let allCardsData = [];             // 名刺データの全件保持用 // 削除済み
-
-    // --- JSONファイルからデータを取得 --- // 削除済みフェッチブロック
-    // fetch('../JSON/data.json')
-    //     .then(res => res.json())
-    //     .then(data => {
-    //         allCardsData = data;
-    //         displayCards(allCardsData, dom.cardList, showDetailModal); // 初期表示
-    //         setupCardFilters(dom, allCardsData);
-    //     });
     loadInitialCards(dom); // 初期カード読み込み関数の呼び出しを追加
 
     // --- 各イベントの初期設定 ---
     setupUIEvents(dom);                
     setupModalEvents(dom);        
-    setupCardFilters(dom); // Re-enabled and removed allCardsData
+    setupCardFilters(dom); 
 });
 
 
@@ -54,18 +41,7 @@ function setupModalEvents(dom) {
     // 「閉じる」ボタンでモーダルを閉じる
     dom.closeButton.addEventListener('click', () => closeModal(dom.modal));
     // 「リセット」ボタンでフォーム初期化
-    dom.resetButton.addEventListener('click', () => resetModalInputs(dom.modal)); // dom.modalを引数として渡す
-    // 「送信」ボタンでカード追加処理
-    // dom.submitButton.addEventListener('click', () => {
-    //     // utils.jsの新しいhandleCardSubmissionを使用するように更新
-    //     // モーダル要素、成功時のコールバック、リセット時のコールバックが必要
-    //     handleCardSubmission(dom.modal, () => loadInitialCards(dom), () => {
-    //         // utils.jsのresetCallbackはモーダル要素を期待するようになった
-    //         // resetModalInputsを直接呼び出す方が明確かもしれない
-    //         resetModalInputs(dom.modal); 
-    //         // dom.resetButton.click(); // これはモーダルの既存のリセットロジックをトリガーするはず
-    //     });
-    // });
+    dom.resetButton.addEventListener('click', () => resetModalInputs(dom.modal));
     // モーダル外クリックでモーダルを閉じる
     setupModalCloseOnOutsideClick(dom.modal);
 }
@@ -133,19 +109,8 @@ window.performSearch = function () {
         });
 };
 
-// ページ読み込み時にフォームのsubmitイベントに登録し、クリックの二重発火防止
-document.addEventListener('DOMContentLoaded', () => {
-    const searchForm = document.getElementById('searchForm');
-    if (searchForm) {
-        searchForm.addEventListener('submit', (event) => {
-            event.preventDefault();  // フォームの送信を止める
-            window.performSearch();  // performSearchを呼ぶ
-        });
-    }
-});
 
-
-// 初期カード読み込み関数 (async/await を .then().catch() に変更)
+// 初期カード読み込み関数
 function loadInitialCards(dom) {
     fetch(`${window.cardServletUrl}?action=list`) // グローバル変数を使用
         .then(response => {
@@ -158,21 +123,12 @@ function loadInitialCards(dom) {
             }
             return response.json();
         })
-        .then(cards => { // これはCardInfoの配列直接、またはエラーオブジェクト
-            // CardServletは成功時にはlistアクションで配列を直接返す
-            // またはエラー時には{success:false, message:...} (CardServlet.javaで未知のアクションに対して処理されるように)
-            // listアクション自体については、CardDAOはSQLエラー時に空のリストを返し、success:falseオブジェクトは返さない
-            // そのため、ここでは主に配列を期待する
+        .then(cards => { 
             if (Array.isArray(cards)) {
                 displayCards(cards, dom.cardList, showDetailModal);
-                // このステップのプロンプトはsetupCardFiltersを更新することだった
-                // setupCardFilters自体が初期読み込み後に呼び出される必要がある場合、
-                // それはこの関数の変更になる。しかしプロンプトにはこう書かれている：
-                // "DOMContentLoadedでsetupCardFilters(dom)を呼び出す"
-                // "allCardsDataはもう必要ない"
-                // これはsetupCardFiltersがリスナーを設定するだけで、データ自体は必要ないことを意味する
-            } else if (cards && cards.success === false && cards.message) { // サーブレットからの明示的なエラーレスポンスを処理
-                 console.error('サーブレットからのエラー (初期読み込み):', cards.message);
+                
+            } else if (cards && cards.success === false && cards.message) { 
+                 console.error('サーブレットからのエラー :', cards.message);
                  dom.cardList.innerHTML = `<p>カードの読み込みエラー: ${cards.message}.</p>`;
             } else {
                 // サーブレットからの初期読み込みでの未認識のレスポンス構造

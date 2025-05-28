@@ -42,7 +42,7 @@ public class UserDAO {
         }
     }
 
-    // メールアドレスでユーザーを検索（ログイン処理用）
+    // メールアドレスでユーザーを検索
     public User findUserByEmail(String email) {
         String sql = "SELECT * FROM user WHERE email = ?";
 
@@ -58,7 +58,7 @@ public class UserDAO {
                 if (rs.next()) {
                     User user = new User();
                     user.setEmail(rs.getString("email"));
-                    user.setPassword(rs.getString("password")); // ハッシュ化されたパスワード
+                    user.setPassword(rs.getString("password")); 
                     return user;
                 }
             }

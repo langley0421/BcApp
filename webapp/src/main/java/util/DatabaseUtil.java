@@ -6,15 +6,12 @@ import java.sql.SQLException;
 
 public class DatabaseUtil {
 
-    // これらの値は一般的なプレースホルダーです。
-    // ご自身の環境に合わせて設定を変更する必要がある可能性が高いです。
     private static final String JDBC_URL = "jdbc:mysql://localhost:3306/db_cardApp";
     private static final String JDBC_USER = "root";
     private static final String JDBC_PASSWORD = "password";
 
     static {
         try {
-            // MySQL Connector/J 8.x のドライバを想定しています。
             Class.forName("com.mysql.cj.jdbc.Driver");
         } catch (ClassNotFoundException e) {
             throw new RuntimeException("JDBC Driver not found. WEB-INF/lib に com.mysql.cj.jdbc.Driver を含むJARファイルがあるか確認してください。", e);

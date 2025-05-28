@@ -7,21 +7,19 @@ export function generateCardDetailsHTML(cardData) {
     console.log("詳細カードデータ:", cardData);
 
     return `
-        <h3>${cardData.name || 'N/A'}</h3>
-        <p><strong>会社名:</strong> ${cardData.companyName || 'N/A'}</p>
-        <p><strong>部署:</strong> ${cardData.departmentName || 'N/A'}</p>
-        <p><strong>役職:</strong> ${cardData.positionName || 'N/A'}</p>
-        <p><strong>Email:</strong> ${cardData.email || 'N/A'}</p>
-        <p><strong>電話番号 (会社):</strong> ${cardData.companyPhone || 'N/A'}</p>
-        <p><strong>住所 (会社):</strong> ${cardData.companyAddress || 'N/A'}</p>
-        <p><strong>郵便番号 (会社):</strong> ${cardData.companyZipcode || 'N/A'}</p>
-        <p><strong>備考:</strong> ${cardData.remarks || 'N/A'}</p>
+        <h3>${cardData.name || ''}</h3>
+        <p><strong>会社名:</strong> ${cardData.companyName || ''}</p>
+        <p><strong>部署:</strong> ${cardData.departmentName || ''}</p>
+        <p><strong>役職:</strong> ${cardData.positionName || ''}</p>
+        <p><strong>Email:</strong> ${cardData.email || ''}</p>
+        <p><strong>電話番号 (会社):</strong> ${cardData.companyPhone || ''}</p>
+        <p><strong>住所 (会社):</strong> ${cardData.companyAddress || ''}</p>
+        <p><strong>郵便番号 (会社):</strong> ${cardData.companyZipcode || ''}</p>
+        <p><strong>備考:</strong> ${cardData.remarks || ''}</p>
         <p><strong>お気に入り:</strong> ${cardData.favorite ? 'はい' : 'いいえ'}</p>
-        <p><strong>作成日時:</strong> ${cardData.createdDate || 'N/A'}</p>
+        <p><strong>作成日時:</strong> ${cardData.createdDate || ''}</p>
     `;
 }
-
-
 
 
 // ---単一の名刺カードを生成する関数。クリック時のコールバックも---
@@ -31,12 +29,12 @@ export function createCardElement(cardData, onCardClick) {
 
     card.innerHTML = `
         <div class="card-header">
-            <span class="card-name">${cardData.name || 'N/A'}</span>
+            <span class="card-name">${cardData.name || ''}</span>
             <span class="card-favorite">${cardData.favorite ? '★' : '☆'}</span>
         </div>
-        <p class="card-company">会社: ${cardData.companyName || 'N/A'}</p>
-        <p class="card-department">部署: ${cardData.departmentName || 'N/A'}</p>
-        <p class="card-position">役職: ${cardData.positionName || 'N/A'}</p>
+        <p class="card-company">会社: ${cardData.companyName || ''}</p>
+        <p class="card-department">部署: ${cardData.departmentName || ''}</p>
+        <p class="card-position">役職: ${cardData.positionName || ''}</p>
     `;
 
     card.dataset.cardId = cardData.cardId;
@@ -70,6 +68,7 @@ export function displayCards(cards, cardList, onCardClick) {
 
 
 // ---「検索モード」「最近追加モード」など、表示切替を行う関数---
+//未実装
 export function toggleViewMode(mode) {
     const searchBar = document.querySelector('.search-bar');
     const recentFilter = document.getElementById('recent-filter');
@@ -116,17 +115,9 @@ export function showDetailModal(cardData, cardElement) { // cardElementはメイ
     // 編集ボタンの機能
     const editButton = detailModal.querySelector('.edit-button');
     editButton.addEventListener('click', () => {
-        console.log('Edit button clicked for card:', cardData);
         const modal = document.getElementById('edit-modal');
 
-        if (!modal) {
-            console.error('#edit-modal not found in the DOM!');
-            alert('Error: Edit form is missing. Please contact support.'); // User-facing error
-            return;
-        }
-
         openModal(modal); // 表示
-        console.log('#edit-modal classList after openModal:', modal.classList);
 
         // フォームの各フィールドにデータをセット (cardData を直接使用)
         const cardIdInput = modal.querySelector('input[name="card_id"]');
@@ -164,10 +155,8 @@ export function showDetailModal(cardData, cardElement) { // cardElementはメイ
         // 詳細モーダルは非表示にする（または削除）
     	if (detailModal && detailModal.parentNode) {
         	detailModal.parentNode.removeChild(detailModal);
-    }
+    	}
     });
-
-
 
     // 削除ボタンの機能
     detailModal.querySelector('.delete-button').addEventListener('click', () => { // asyncを削除
@@ -216,7 +205,7 @@ export function showDetailModal(cardData, cardElement) { // cardElementはメイ
         document.body.removeChild(detailModal);
     });
 
-    // オプション: modal-contentsの外側をクリックした場合に詳細モーダルを閉じる
+    // modal-contentsの外側をクリックした場合に詳細モーダルを閉じる
     detailModal.addEventListener('click', (event) => {
         if (event.target === detailModal) { // 背景をクリックした場合
             document.body.removeChild(detailModal);
@@ -292,48 +281,6 @@ export function setActiveLink(navLinks, activeClass = 'active', defaultHref = '#
 }
 
 
-// ---フォームからカードデータを取得する関数--- 
-export function getCardFormData() {
-    return {
-        company: document.querySelector('input[name="company"]').value,
-        name: document.querySelector('input[name="name"]').value,
-        zipcode: document.querySelector('input[name="zipcode"]').value,
-        address: document.querySelector('input[name="address"]').value,
-        department: document.querySelector('input[name="department"]').value,
-        phone: document.querySelector('input[name="phone"]').value,
-        position: document.querySelector('input[name="position"]').value,
-        email: document.querySelector('input[name="email"]').value,
-        remarks: document.querySelector('input[name="remarks"]').value,
-        favorite: false // デフォルト値
-    };
-}
-
-
-// モーダルからカードフォームデータを取得する関数
-export function getCardFormDataFromModal(modalElement) {
-    if (!modalElement) {
-        console.error("モーダル要素がgetCardFormDataFromModalに提供されていません");
-        return null;
-    }
-    const data = {};
-    data.card_id = modalElement.querySelector('input[name="card_id"]')?.value || "0"; // 追加の場合は "0" または空にデフォルト設定
-    data.name = modalElement.querySelector('input[name="name"]')?.value;
-    data.email = modalElement.querySelector('input[name="email"]')?.value;
-    data.remarks = modalElement.querySelector('textarea[name="remarks"]')?.value;
-    data.favorite = modalElement.querySelector('input[name="favorite"]')?.checked;
-
-    data.company_name = modalElement.querySelector('input[name="company_name"]')?.value;
-    data.company_zipcode = modalElement.querySelector('input[name="company_zipcode"]')?.value;
-    data.company_address = modalElement.querySelector('input[name="company_address"]')?.value;
-    data.company_phone = modalElement.querySelector('input[name="company_phone"]')?.value;
-
-    data.department_name = modalElement.querySelector('input[name="department_name"]')?.value;
-    data.position_name = modalElement.querySelector('input[name="position_name"]')?.value;
-    
-    return data;
-}
-
-
 export function handleCardSubmission(modal, onSuccessRefreshCallback, resetCallback) {
     const formData = getCardFormDataFromModal(modal);
 
@@ -374,17 +321,17 @@ export function handleCardSubmission(modal, onSuccessRefreshCallback, resetCallb
                 // サーバーから返されたエラーメッセージを取得
                 throw new Error(`HTTPエラー ${response.status}: ${errorData?.message || 'カードの追加に失敗しました'}`);
             }).catch(() => {
-                // JSON 解析に失敗した場合
+                // JSON 解析に失敗
                 throw new Error(`HTTPエラー ${response.status}: カードの追加に失敗しました`);
             });
         }
-        return response.json(); // 成功した場合、JSONデータを返す
+        return response.json(); // JSONデータを返す
     })
     .then(result => {
         if (result.success) {
             closeModal(modal); // モーダルを閉じる
             if (resetCallback) resetCallback(); // 追加/更新後にフォームをリセット
-            if (onSuccessRefreshCallback) onSuccessRefreshCallback(); // リストを更新するコールバック
+            if (onSuccessRefreshCallback) onSuccessRefreshCallback(); // リストを更新する
             alert(params.get('action') === 'update' ? '名刺が更新されました。' : '名刺が追加されました。');
         } else {
             // 失敗時の処理
@@ -392,43 +339,10 @@ export function handleCardSubmission(modal, onSuccessRefreshCallback, resetCallb
         }
     })
     .catch(error => {
-        // サーバー側のエラーやネットワークエラーの処理
+        // サーバー側のエラー処理
         console.error('カード送信エラー:', error);
         alert('カードの送信中にエラーが発生しました: ' + error.message);
     });
 }
 
-// ---名刺カードを最近追加順にソートする関数---
-// export function sortCardsByDate(cards) { 
-//     //スプレット構文 ...cardsの中身を取り出して展開
-//     return [...cards].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-// }
-// 'created_date' (CardInfoのTimestamp) でソートする場合:
-export function sortCardsByDate(cards) {
-    return [...cards].sort((a, b) => {
-        const dateA = a.created_date ? new Date(a.created_date).getTime() : 0;
-        const dateB = b.created_date ? new Date(b.created_date).getTime() : 0;
-        return dateB - dateA; // 降順（新しいものが先）
-    });
-}
 
-
-// ---名刺カードを最近追加された順にフィルタリングする関数---
-// export function filterCardsByRecentDays(cards, days) { 
-//     const now = new Date();
-//     return cards.filter(card => {
-//         const createdAt = new Date(card.created_at);
-//         const diffDays = (now - createdAt) / (1000 * 60 * 60 * 24);
-//         return diffDays <= days;
-//     });
-// }
-// 'created_date' (CardInfoのTimestamp) でフィルタリングする場合:
-export function filterCardsByRecentDays(cards, days) {
-    const now = new Date().getTime();
-    const daysInMillis = days * 24 * 60 * 60 * 1000;
-    return cards.filter(card => {
-        const createdAt = card.created_date ? new Date(card.created_date).getTime() : 0;
-        if (createdAt === 0) return false; // 作成日がないカードは含めない
-        return (now - createdAt) <= daysInMillis;
-    });
-}

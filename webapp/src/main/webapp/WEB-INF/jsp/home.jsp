@@ -14,7 +14,8 @@
 </head>
 <body>
     <header class="header">
-        <h1>BizCardy</h1>
+        <h1>名刺管理</h1>
+        <!-- 未実装 -->
         <button id="dark-mode-toggle">
             <span id="icon">
                 <!-- 省略：SVGアイコン -->
@@ -27,12 +28,11 @@
             <li><a href="#section1" class="nav-link">ホーム</a></li>
             <li><a href="#section2" class="nav-link">お気に入り</a></li>
             <li><a href="#section3" class="nav-link">最近追加</a></li>
-            <li><a href="#section5" class="nav-link">アカウント設定</a></li>
         </ul>
     </aside>
 
     <main class="content">
-    <%-- <%
+    <%
         String message = (String) session.getAttribute("message");
         if (message != null) {
             session.removeAttribute("message");
@@ -47,7 +47,7 @@
             <p style="color:red; text-align:center;"><%= error %></p>
     <%
         }
-    %> --%>
+    %>
         <div class="search-bar">
     		<input type="text" placeholder="名刺を検索．．．" class="search-input" id="searchInput">
     		<button class="search-button">検索</button>
@@ -62,7 +62,6 @@
         </div>
 
         <div id="card-list" class="card-list">
-            
         </div>
 
         <div id="modal" class="modal hidden">
@@ -73,8 +72,8 @@
 		                    <input type="hidden" name="card_id" value="0">
 		                    <tr>
 		                        <td>
-		                            <label>会社名<br>
-		                                <input type="text" name="company_name">
+		                            <label>会社名（※必須）<br>
+		                                <input type="text" name="company_name" required>
 		                            </label>
 		                        </td>
 		                        <td>
@@ -86,7 +85,7 @@
 		                    <tr>
 		                        <td>
 		                            <label>氏名（※必須）<br>
-		                                <input type="text" name="name">
+		                                <input type="text" name="name" required>
 		                            </label>
 		                        </td>
 		                        <td>
@@ -128,8 +127,9 @@
 		                    </tr>
 		                    <tr>
 		                        <td colspan="2">
-		                            <label>
-		                                <input type="checkbox" name="favorite"> お気に入り
+		                            <label class="favo">
+		                            	お気に入り
+		                                <input type="checkbox" name="favorite">
 		                            </label>
 		                        </td>
 		                    </tr>
@@ -167,7 +167,7 @@
 		                </tr>
 		                <tr>
 		                    <td>
-		                        <label>氏名（※必須）<br>
+		                        <label>氏名<br>
 		                            <input type="text" name="name" value="${card.name}">
 		                        </label>
 		                    </td>
@@ -210,8 +210,10 @@
 		                </tr>
 		                <tr>
 		                    <td colspan="2">
-		                        <label>
-		                            <input type="checkbox" name="favorite" ${card.favorite ? "checked" : ""}> お気に入り
+		                        
+		                        <label class="favo">
+		                        	お気に入り
+		                        	<input type="checkbox" name="favorite" ${card.favorite ? "checked" : ""}>
 		                        </label>
 		                    </td>
 		                </tr>

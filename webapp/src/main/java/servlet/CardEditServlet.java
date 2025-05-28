@@ -25,10 +25,8 @@ public class CardEditServlet extends HttpServlet {
         String companyZipcode = request.getParameter("company_zipcode");
         String companyAddress = request.getParameter("company_address");
         String companyPhone = request.getParameter("company_phone");
-
         String departmentName = request.getParameter("department_name");
         String positionName = request.getParameter("position_name");
-
         String name = request.getParameter("name");
         String email = request.getParameter("email");
         String remarks = request.getParameter("remarks");

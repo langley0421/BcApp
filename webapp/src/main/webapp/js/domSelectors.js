@@ -1,6 +1,5 @@
 // ---DOMセレクター---
-
-
+//後から追加した分を移動しないといけない
 
 export function getDOMSelectors() {
     return {
